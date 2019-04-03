@@ -4,10 +4,10 @@ namespace App;
 
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class Group extends Model
+class Group extends Eloquent
 {
     protected $connection = 'mongodb';
-    protected $collection = 'developeers';
+    protected $collection = 'groups';
     public $timestamps = true;
 
     protected $fillable = [

@@ -4,10 +4,10 @@ namespace App;
 
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class Version extends Model
+class Version extends Eloquent
 {
     protected $connection = 'mongodb';
-    protected $collection = 'developeers';
+    protected $collection = 'versions';
     public $timestamps = true;
 
     protected $fillable = [
