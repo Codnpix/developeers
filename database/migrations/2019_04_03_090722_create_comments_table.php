@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Jenssegers\Mongodb\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePostsTable extends Migration
+class CreateCommentsTable extends Migration
 {
     /**
     * The name of the database connection to use.
@@ -22,9 +22,9 @@ class CreatePostsTable extends Migration
     public function up()
     {
         Schema::connection($this->connection)
-        ->table('posts', function (Blueprint $collection)
+        ->table('comments', function (Blueprint $collection)
         {
-            $collection->string('title');
+            $collection->string('content');
             $collection->timestamps();
         });
     }
@@ -37,7 +37,7 @@ class CreatePostsTable extends Migration
     public function down()
     {
         Schema::connection($this->connection)
-        ->table('posts', function (Blueprint $collection)
+        ->table('comments', function (Blueprint $collection)
         {
             $collection->drop();
         });
