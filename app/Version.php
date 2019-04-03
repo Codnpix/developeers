@@ -4,13 +4,13 @@ namespace App;
 
 use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 
-class Post extends Eloquent
+class Version extends Eloquent
 {
     protected $connection = 'mongodb';
-    protected $collection = 'posts';
+    protected $collection = 'versions';
     public $timestamps = true;
 
     protected $fillable = [
-        'title', 'author_id', 'versions_id', 'keywords_id', 'votes', 'created_at', 'updated_at'
+        'number', 'author_id', 'snippets_id', 'text_content', 'comments_id', 'votes', 'created_at', 'updated_at'
     ];
 }
