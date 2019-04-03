@@ -7,9 +7,10 @@ use Jenssegers\Mongodb\Eloquent\Model as Eloquent;
 class Post extends Eloquent
 {
     protected $connection = 'mongodb';
-    protected $collection = 'developeers';
+    protected $collection = 'posts';
+    public $timestamps = true;
 
     protected $fillable = [
-        'title', 'versions','comment'
+        'title', 'versions','comments'
     ];
 }
