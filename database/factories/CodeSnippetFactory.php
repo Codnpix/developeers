@@ -1,6 +1,6 @@
 <?php
 
-use App\Comment;
+use App\CodeSnippet;
 use Illuminate\Support\Str;
 use Faker\Generator as Faker;
 
@@ -15,7 +15,7 @@ use Faker\Generator as Faker;
 |
 */
 
-$factory->define(Comment::class, function (Faker $faker) {
+$factory->define(CodeSnippet::class, function (Faker $faker) {
     return [
         'content' => $faker->paragraph($nbSentences = 4, $variableNbSentences = true),
         'language' => 'HTML',

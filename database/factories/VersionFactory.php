@@ -19,9 +19,10 @@ $factory->define(Version::class, function (Faker $faker) {
     return [
         'number' => '1.' . rand(0,9),
         'text_content' => $faker->paragraph($nbSentences = 4, $variableNbSentences = true),
-        'author_id' => rand(0,20),
+        'author_id' => rand(0,60),
         'snippets_id' => [],
         'comments_id' => [],
+        'votes' => [],
         'created_at' => now(),
         'updated_at' => now(),
     ];

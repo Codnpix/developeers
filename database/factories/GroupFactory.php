@@ -36,7 +36,6 @@ $factory->define(Group::class, function (Faker $faker) {
         'description' => $faker->paragraph($nbSentences = 2, $variableNbSentences = true),
         'users_id' => generateIdsArray($idsPool),
         'keywords_id' => generateIdsArray($idsPool),
-        'posts_id' => [],
         'votes' => [],
         'created_at' => now(),
         'updated_at' => now(),

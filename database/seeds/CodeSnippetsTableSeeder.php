@@ -11,6 +11,6 @@ class CodeSnippetsTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Group::class, 20)->create();
+        factory(App\CodeSnippet::class, 20)->create();
     }
 }

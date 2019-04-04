@@ -20,6 +20,7 @@ $factory->define(Post::class, function (Faker $faker) {
     return [
         'title' => str_random(20),
         'author_id' => rand(0,20),
+        'group_id' => '',
         'versions_id' => [],
         'keywords_id' => [],
         'votes' => [],
