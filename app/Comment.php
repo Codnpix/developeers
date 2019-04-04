@@ -11,6 +11,6 @@ class Comment extends Eloquent
     public $timestamps = true;
 
     protected $fillable = [
-        'author_id', 'content', 'votes', 'created_at', 'updated_at'
+        'author_id', 'content', 'version_id', 'votes', 'created_at', 'updated_at'
     ];
 }

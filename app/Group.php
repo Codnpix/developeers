@@ -11,6 +11,6 @@ class Group extends Eloquent
     public $timestamps = true;
 
     protected $fillable = [
-        'name', 'desciption', 'keywords_id', 'users_id', 'votes', 'created_at', 'updated_at'
+        'name', 'desciption', 'keywords', 'users_id', 'votes', 'created_at', 'updated_at'
     ];
 }

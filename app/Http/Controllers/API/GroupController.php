@@ -4,17 +4,18 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Group;
+use App\Keyword;
 
-class GroupController extends Controller
-{
+class GroupController extends Controller {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
+    public function index() {
+        return Group::all();
     }
 
     /**
@@ -23,9 +24,34 @@ class GroupController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+
+      // if (Auth::check()) {
+      //
+      //   $initUser_id = Auth::id();//celui qui crée le groupe est le premier user ajouté au groupe.
+      //
+      //   $group = new Group();
+      //
+      //   $group->name = $request->name;
+      //   $group->description = $request->description;
+      //   $group->keywords = $requests->keywords;
+      //   $group->votes = [];
+      //   $group->users_id = [$initUser_id];
+      //   $group->save();
+      // }
+
+      $initUser_id = 1;
+
+      $group = new Group();
+
+      $group->name = $request->name;
+      $group->description = $request->description;
+      $group->keywords = $request->keywords;
+      $group->votes = [];
+      $group->users_id = [$initUser_id];
+      $group->save();
+
+      return "Group created successfully";
     }
 
     /**
@@ -34,9 +60,8 @@ class GroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        //
+    public function show(Group $group) {
+        return $group;
     }
 
     /**
@@ -46,9 +71,14 @@ class GroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function update(Request $request, Group $group) {
+
+        $group->name = $request->name;
+        $group->description = $request->description;
+        $group->keywords = $request->keywords;
+        $group->save();
+
+        return "Group updated successfully";
     }
 
     /**
@@ -57,8 +87,10 @@ class GroupController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function destroy(Group $group) {
+
+        $group->delete();
+
+        return "Group deleted successfully";
     }
 }

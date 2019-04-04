@@ -20,6 +20,7 @@ $factory->define(Comment::class, function (Faker $faker) {
         'content' => $faker->paragraph($nbSentences = 4, $variableNbSentences = true),
         'author_id' => rand(0,20),
         'votes' => [],
+        'version_id' => '',
         'created_at' => now(),
         'updated_at' => now(),
     ];

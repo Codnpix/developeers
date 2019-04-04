@@ -19,5 +19,6 @@ $factory->define(CodeSnippet::class, function (Faker $faker) {
     return [
         'content' => $faker->paragraph($nbSentences = 4, $variableNbSentences = true),
         'language' => 'HTML',
+        'version_id' => ''
     ];
 });

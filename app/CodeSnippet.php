@@ -11,6 +11,6 @@ class CodeSnippet extends Eloquent
     public $timestamps = true;
 
     protected $fillable = [
-        'content', 'language',
+        'content', 'language', 'version_id'
     ];
 }

@@ -11,6 +11,6 @@ class Version extends Eloquent
     public $timestamps = true;
 
     protected $fillable = [
-        'number', 'author_id', 'snippets_id', 'text_content', 'comments_id', 'votes', 'created_at', 'updated_at'
+        'number', 'author_id', 'post_id', 'text_content', 'votes', 'created_at', 'updated_at'
     ];
 }
