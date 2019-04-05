@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Post;
+use App\repositories\VersionManager;
 
 use App\Version;
 use App\CodeSnippet;
@@ -118,20 +119,49 @@ class PostManager extends Model {
    * Display the specified resource.
    *
    * @param  Post
+   * @param Version
    * @return \Illuminate\Http\Response
    */
-  public static function show(Post $post) {
+  public static function getPostVersion(Post $post, Version $version) {
 
-      $versions = self::getPostVersions($post);
+    $snippets = self::getVersionSnippets($version);
 
-      foreach ($versions as $version) {
-        $version->codeSnippets = self::getVersionSnippets($version);
-      }
+    $versions = self::getPostVersions($post);
+    $versionsList = [];
 
-      $postBuild = $post;
-      $postBuild->versions = $versions;
+    foreach ($versions as $version) {
+      array_push($versionsList, array($version->number=>$version->id));
+    }
 
-      return $postBuild;
+    $postBuild = $post;
+    $postBuild->versions = $versionsList;
+    $postBuild->active_version = $version;
+    $postBuild->active_version->code_snippets = $snippets;
+    $postBuild->active_version->comment = [];
+
+    return $postBuild;
+  }
+
+  public static function getPost(Post $post) {
+
+    $versions = self::getPostVersions($post);
+    $lastVersion = $versions[count($versions) - 1];
+
+    $snippets = self::getVersionSnippets($lastVersion);
+
+    $versionsList = [];
+
+    foreach ($versions as $version) {
+      array_push($versionsList, array($version->number=>$version->id));
+    }
+
+    $postBuild = $post;
+    $postBuild->versions = $versionsList;
+    $postBuild->active_version = $lastVersion;
+    $postBuild->active_version->code_snippets = $snippets;
+    $postBuild->active_version->comment = [];//tmp
+
+    return $postBuild;
   }
 
   /**

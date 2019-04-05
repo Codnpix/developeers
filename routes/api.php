@@ -24,8 +24,10 @@ Route::namespace('API')->group(function() {
   Route::get('/posts', 'PostController@index')->name('posts');
   Route::post('/posts', 'PostController@store')->name('storePost');
   Route::get('/posts/{post}', 'PostController@show')->name('post');
+  Route::get('/posts/{post}/{version}', 'PostController@showVersion')->name('postVersion');
   Route::put('/posts/{post}', 'PostController@update')->name('updatePost');
   Route::delete('/posts/{post}', 'PostController@destroy')->name('deletePost');
+  Route::post('/posts/comments/{version}', 'PostController@addComment')->name('addComment');
   Route::put('/votepost/{post}', 'PostController@votePost')->name('votePost');
   Route::put('/voteversion/{version}', 'PostController@voteVersion')->name('voteVersion');
   Route::post('/commitversion/{post}', 'PostController@commitVersion')->name('commitVersion');

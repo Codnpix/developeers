@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Version;
 use App\CodeSnippet;
 use App\repositories\PostManager;
+use App\Comment;
+use App\repositories\CommentManager;
 
 class PostController extends Controller {
 
-//PLUS TARD; DÉPLACER TOUTE L'INTELLINGENCE MÉTIER, OPÉRATIONS SUR TABLES ETC DANS UNE CLASS REPOSITORY
-//DU COUP, NE PLUS UTILISER LES ROUTES RESSOURCES SUR LES MÉTHODES
 
     /**
      * Display a listing of the resource.
@@ -23,8 +23,15 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
+
       $posts = PostManager::getAllPosts();
-      return $posts;
+      $postsBuild = [];
+
+      foreach ($posts as $post) {
+        $postBuild = PostManager::getPost($post);
+        $postsBuild[] = $postBuild;
+      }
+      return $postsBuild;
     }
 
     /**
@@ -38,14 +45,23 @@ class PostController extends Controller {
         return "success";
     }
 
-    public function commitVersion(Request $request, Post $post) {
-      PostManager::commitVersion($request, $post);
-      return "Version committed successfully !";
-    }
-
     public function votePost(Request $request, Post $post) {
       PostManager::votePost($request, $post);
       return "Vote added on post successfully!";
+    }
+
+    public function addComment(Request $request, Version $version) {
+      //CommentManager::addComment($request, $version);
+      //return 'Comment added successfully!';
+    }
+
+    public function voteComment(Request $request, Comment $comment) {
+      //
+    }
+
+    public function commitVersion(Request $request, Post $post) {
+      PostManager::commitVersion($request, $post);
+      return "Version committed successfully !";
     }
 
     public function voteVersion(Request $request, Version $version) {
@@ -57,11 +73,17 @@ class PostController extends Controller {
      * Display the specified resource.
      *
      * @param  Post
+     * @param Version
      * @return \Illuminate\Http\Response
      */
     public function show(Post $post) {
-        $postBuild = PostManager::show($post);
+        $postBuild = PostManager::getPost($post);
         return $postBuild;
+    }
+
+    public function showVersion(Post $post, Version $version) {
+      $postBuild = PostManager::getPostVersion($post, $version);
+      return $postBuild;
     }
 
     /**
