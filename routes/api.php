@@ -27,9 +27,19 @@ Route::namespace('API')->group(function() {
   Route::get('/posts/{post}/{version}', 'PostController@showVersion')->name('postVersion');
   Route::put('/posts/{post}', 'PostController@update')->name('updatePost');
   Route::delete('/posts/{post}', 'PostController@destroy')->name('deletePost');
-  Route::post('/posts/comments/{version}', 'PostController@addComment')->name('addComment');
   Route::put('/votepost/{post}', 'PostController@votePost')->name('votePost');
+
   Route::put('/voteversion/{version}', 'PostController@voteVersion')->name('voteVersion');
   Route::post('/commitversion/{post}', 'PostController@commitVersion')->name('commitVersion');
-  Route::get('/test', 'PostController@test')->name('test');
+
+  Route::post('/comments/{version}', 'CommentController@addComment')->name('addComment');
+  Route::put('/comments/vote/{comment}', 'CommentController@voteComment')->name('voteComment');
+
+  Route::get('/groups', 'GroupController@index')->name('groups');
+  Route::post('/groups', 'GroupController@store')->name('storeGroup');
+  Route::get('/groups/{group}', 'GroupController@show')->name('group');
+  Route::put('/groups/{group}', 'GroupController@update')->name('updateGroup');
+  Route::delete('/groups/{group}', 'GroupController@destroy')->name('deleteGroup');
+  Route::put('/groups/join/{group}/{user}', 'GroupController@joinGroup')->name('joinGroup');
+  Route::put('/groups/leave/{group}/{user}', 'GroupController@leaveGroup')->name('leaveGroup');
 });

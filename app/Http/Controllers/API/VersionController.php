@@ -11,10 +11,5 @@ use App\Http\Controllers\API\CodeSnippetController;
 
 class VersionController extends Controller {
 
-    public static getPostVersions($post_id) {
-
-      $versions = Version::where('post_id', $post_id)->get();
-
-      return $versions;
-    }
+  //
 }

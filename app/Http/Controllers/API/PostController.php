@@ -13,6 +13,7 @@ use App\CodeSnippet;
 use App\repositories\PostManager;
 use App\Comment;
 use App\repositories\CommentManager;
+use App\repositories\VersionManager;
 
 class PostController extends Controller {
 
@@ -50,22 +51,13 @@ class PostController extends Controller {
       return "Vote added on post successfully!";
     }
 
-    public function addComment(Request $request, Version $version) {
-      //CommentManager::addComment($request, $version);
-      //return 'Comment added successfully!';
-    }
-
-    public function voteComment(Request $request, Comment $comment) {
-      //
-    }
-
     public function commitVersion(Request $request, Post $post) {
-      PostManager::commitVersion($request, $post);
+      VersionManager::commitVersion($request, $post);
       return "Version committed successfully !";
     }
 
     public function voteVersion(Request $request, Version $version) {
-      PostManager::voteVersion($request, $version);
+      VersionManager::voteVersion($request, $version);
       return 'Vote added on version successfully!';
     }
 
