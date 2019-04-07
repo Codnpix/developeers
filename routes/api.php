@@ -19,7 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::namespace('API')->group(function() {
 
-  //Route::resource('groups', 'GroupController')->except(['edit', 'create']);
+  Route::get('/user/notifications/{user}', 'UserController@getNotifications')->name('getNotifications');
+
   //Route::resource('profile', 'ProfileController')->except(['edit', 'create']);
   Route::get('/posts', 'PostController@index')->name('posts');
   Route::post('/posts', 'PostController@store')->name('storePost');
