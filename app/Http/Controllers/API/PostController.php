@@ -12,8 +12,10 @@ use App\Version;
 use App\CodeSnippet;
 use App\repositories\PostManager;
 use App\Comment;
+use App\User;
 use App\repositories\CommentManager;
 use App\repositories\VersionManager;
+use App\repositories\NotificationManager;
 
 class PostController extends Controller {
 
@@ -24,15 +26,7 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-
       $posts = PostManager::getAllPosts();
-      //$postsBuild = [];
-
-      // foreach ($posts as $post) {
-      //   $postBuild = PostManager::getPost($post);
-      //   $postsBuild[] = $postBuild;
-      // }
-      //return $postsBuild;
       return $posts;
     }
 
@@ -71,11 +65,15 @@ class PostController extends Controller {
      */
     public function show(Post $post) {
         $postBuild = PostManager::getPost($post);
+        $user = User::find(1);//User::find(Auth::id());
+        NotificationManager::clearNotifications($user, $post);
         return $postBuild;
     }
 
     public function showVersion(Post $post, Version $version) {
       $postBuild = PostManager::getPostVersion($post, $version);
+      $user = User::find(1);//User::find(Auth::id());
+      NotificationManager::clearNotifications($user, $post);
       return $postBuild;
     }
 

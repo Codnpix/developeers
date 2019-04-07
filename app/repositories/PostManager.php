@@ -4,13 +4,16 @@ namespace App\repositories;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Post;
+
 use App\repositories\VersionManager;
 use App\repositories\CodeSnippetManager;
 use App\repositories\CommentManager;
+use App\repositories\NotificationManager;
 
 use App\Version;
 use App\CodeSnippet;
+use App\User;
+use App\Post;
 
 class PostManager extends Model {
   /**
@@ -55,11 +58,16 @@ class PostManager extends Model {
   }
 
   public static function votePost(Request $request, Post $post) {
+    $notifying = User::find(1);//User::find(Auth::id());
     $vote = $request->vote;
     $postVotes = $post->votes;
     $postVotes[] = $vote;
     $post->votes = $postVotes;
     $post->save();
+
+    $notifType = "vote";
+    $notifSource = "post";
+    NotificationManager::notifyPostAuthor($post, $notifying, $notifType, $notifSource);
   }
 
   /**
