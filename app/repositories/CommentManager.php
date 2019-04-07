@@ -29,4 +29,9 @@ class CommentManager extends Model {
     $comment->votes = $commentVotes;
     $comment->save();
   }
+
+  public static function getComments(Version $version) {
+    $comments = Comment::where('version_id', $version->id)->get();
+    return $comments;
+  }
 }

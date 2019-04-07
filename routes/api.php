@@ -33,7 +33,7 @@ Route::namespace('API')->group(function() {
   Route::post('/commitversion/{post}', 'PostController@commitVersion')->name('commitVersion');
 
   Route::post('/comments/{version}', 'CommentController@addComment')->name('addComment');
-  Route::put('/comments/vote/{comment}', 'CommentController@voteComment')->name('voteComment');
+  Route::put('/votecomment/{comment}', 'CommentController@voteComment')->name('voteComment');
 
   Route::get('/groups', 'GroupController@index')->name('groups');
   Route::post('/groups', 'GroupController@store')->name('storeGroup');

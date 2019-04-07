@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Post;
 use App\repositories\VersionManager;
 use App\repositories\CodeSnippetManager;
+use App\repositories\CommentManager;
 
 use App\Version;
 use App\CodeSnippet;
@@ -24,6 +25,8 @@ class PostManager extends Model {
       foreach ($versions as &$version) {
         $snippets = CodeSnippetManager::getVersionSnippets($version);
         $version->codeSnippets = $snippets;
+        $comments = CommentManager::getComments($version);
+        $version->comments = $comments;
       }
       $post->versions = $versions;
     }
@@ -73,15 +76,17 @@ class PostManager extends Model {
     $versions = VersionManager::getPostVersions($post);
     $versionsList = [];
 
-    foreach ($versions as $version) {
-      array_push($versionsList, array($version->number=>$version->id));
+    $comments = CommentManager::getComments($version);
+
+    foreach ($versions as $v) {
+      array_push($versionsList, array($v->number => $v->id));
     }
 
     $postBuild = $post;
     $postBuild->versions = $versionsList;
     $postBuild->active_version = $version;
     $postBuild->active_version->code_snippets = $snippets;
-    $postBuild->active_version->comment = [];
+    $postBuild->active_version->comments = $comments;
 
     return $postBuild;
   }
@@ -93,6 +98,8 @@ class PostManager extends Model {
 
     $snippets = CodeSnippetManager::getVersionSnippets($lastVersion);
 
+    $comments = CommentManager::getComments($lastVersion);
+
     $versionsList = [];
 
     foreach ($versions as $version) {
@@ -103,7 +110,7 @@ class PostManager extends Model {
     $postBuild->versions = $versionsList;
     $postBuild->active_version = $lastVersion;
     $postBuild->active_version->code_snippets = $snippets;
-    $postBuild->active_version->comment = [];//tmp
+    $postBuild->active_version->comments = $comments;
 
     return $postBuild;
   }

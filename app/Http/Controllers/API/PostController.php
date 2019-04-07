@@ -26,13 +26,14 @@ class PostController extends Controller {
     public function index() {
 
       $posts = PostManager::getAllPosts();
-      $postsBuild = [];
+      //$postsBuild = [];
 
-      foreach ($posts as $post) {
-        $postBuild = PostManager::getPost($post);
-        $postsBuild[] = $postBuild;
-      }
-      return $postsBuild;
+      // foreach ($posts as $post) {
+      //   $postBuild = PostManager::getPost($post);
+      //   $postsBuild[] = $postBuild;
+      // }
+      //return $postsBuild;
+      return $posts;
     }
 
     /**
