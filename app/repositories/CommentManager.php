@@ -19,7 +19,7 @@ class CommentManager extends Model {
     $author = User::find(1);//User::find(Auth::id());
     $comment = new Comment();
     $comment->author_id = $author->id;
-    $coment->author_name = $author->name;
+    $comment->author_name = $author->name;
     $comment->content = $request->content;
     $comment->version_id = $version->id;
     $comment->votes = [];

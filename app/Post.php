@@ -15,6 +15,7 @@ class Post extends Eloquent {
       'author_id',
       'author_name',
       'group_id',
+      'group_name',
       'keywords',
       'votes',
       'created_at',
