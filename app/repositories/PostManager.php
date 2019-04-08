@@ -14,6 +14,7 @@ use App\Version;
 use App\CodeSnippet;
 use App\User;
 use App\Post;
+use App\Comment;
 
 class PostManager extends Model {
   /**
@@ -121,6 +122,26 @@ class PostManager extends Model {
     $postBuild->active_version->comments = $comments;
 
     return $postBuild;
+  }
+
+  public static function getUserPosts(User $user) {
+    
+    $userVersions = Version::where('author_id', '=', $user->id)->get();
+    $userVersionsPosts = [];
+    foreach ($userVersions as $ver) {
+      $p = Post::find($ver->post_id);
+      $userVersionsPosts[] = $p;
+    }
+    $userComments = Comment::where('author_id', '=', $user->id)->get();
+    $userCommentsPosts = [];
+    foreach ($userComments as $com) {
+      $ver = Version::find($com->version_id);
+      $p = Post::find($ver->post_id);
+      $userCommentsPosts[] = $p;
+    }
+    $totalUserPosts = array_unique(array_merge($userVersionsPosts, $userCommentsPosts));
+
+    return $totalUserPosts;
   }
 
   /**

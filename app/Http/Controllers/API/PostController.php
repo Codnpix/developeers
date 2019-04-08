@@ -70,6 +70,11 @@ class PostController extends Controller {
         return $postBuild;
     }
 
+    public function showUserPosts(Post $post, User $user) {
+      $posts = PostManager::getUserPosts($user);
+      return $posts;
+    }
+
     public function showVersion(Post $post, Version $version) {
       $postBuild = PostManager::getPostVersion($post, $version);
       $user = User::find(1);//User::find(Auth::id());

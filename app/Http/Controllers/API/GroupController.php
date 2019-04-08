@@ -41,6 +41,11 @@ class GroupController extends Controller {
         return $group;
     }
 
+    public function showUserGroups(User $user) {
+      $groups = GroupManager::getUserGroups($user);
+      return $groups;
+    }
+
     /**
      * Update the specified resource in storage.
      *

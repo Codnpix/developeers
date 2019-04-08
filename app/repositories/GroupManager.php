@@ -12,6 +12,11 @@ use App\User;
 
 class GroupManager extends Model {
 
+  public static function getUserGroups(User $user) {
+    $groups = Group::whereIn('users_id', [1])->get();
+    return $groups;
+  }
+
   public static function store(Request $request) {
 
     // if (Auth::check()) {
@@ -65,7 +70,7 @@ class GroupManager extends Model {
     $key = array_search($user->id, $group->users_id);
 
     if ($key) {
-      
+
       $groupUsers = $group->users_id;
       array_splice($groupUsers, $key ,1);
       $group->users_id = $groupUsers;

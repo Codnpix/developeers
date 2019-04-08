@@ -23,6 +23,7 @@ Route::namespace('API')->group(function() {
 
   //Route::resource('profile', 'ProfileController')->except(['edit', 'create']);
   Route::get('/posts', 'PostController@index')->name('posts');
+  Route::get('/posts/user/{user}', 'PostController@showUserPosts')->name('userPosts');
   Route::post('/posts', 'PostController@store')->name('storePost');
   Route::get('/posts/{post}', 'PostController@show')->name('post');
   Route::get('/posts/{post}/{version}', 'PostController@showVersion')->name('postVersion');
@@ -37,6 +38,7 @@ Route::namespace('API')->group(function() {
   Route::put('/votecomment/{comment}', 'CommentController@voteComment')->name('voteComment');
 
   Route::get('/groups', 'GroupController@index')->name('groups');
+  Route::get('/groups/user/{user}', 'GroupController@showUserGroups')->name('userGroups');
   Route::post('/groups', 'GroupController@store')->name('storeGroup');
   Route::get('/groups/{group}', 'GroupController@show')->name('group');
   Route::put('/groups/{group}', 'GroupController@update')->name('updateGroup');
