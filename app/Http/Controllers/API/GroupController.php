@@ -46,6 +46,11 @@ class GroupController extends Controller {
       return $groups;
     }
 
+    public function searchGroups(Request $request, $words) {
+      $groups = GroupManager::searchGroups($words);
+      return $groups;
+    }
+
     /**
      * Update the specified resource in storage.
      *

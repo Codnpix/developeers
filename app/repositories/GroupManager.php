@@ -17,6 +17,29 @@ class GroupManager extends Model {
     return $groups;
   }
 
+  public static function searchGroups($words) {
+
+    $searchWords = explode(" ", strtolower($words));
+
+    $allGroups = Group::all();
+    $inKeywordsGroups = [];
+
+    foreach ($allGroups as $g) {
+
+      $groupKeywords = $g->keywords;//check keywords
+      $nameWords = explode(" ", strtolower($g->name));//check title words
+
+      foreach ($searchWords as $sw) {
+        //search in keywords
+        if (in_array($sw, $groupKeywords)) $inKeywordsGroups[] = $g;
+        //search in title
+        if (in_array($sw, $nameWords)) $inKeywordsGroups[] = $g;
+      }
+    }
+
+    return array_unique($inKeywordsGroups);
+  }
+
   public static function store(Request $request) {
 
     // if (Auth::check()) {

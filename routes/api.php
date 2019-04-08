@@ -47,4 +47,6 @@ Route::namespace('API')->group(function() {
   Route::delete('/groups/{group}', 'GroupController@destroy')->name('deleteGroup');
   Route::put('/groups/join/{group}/{user}', 'GroupController@joinGroup')->name('joinGroup');
   Route::put('/groups/leave/{group}/{user}', 'GroupController@leaveGroup')->name('leaveGroup');
+  //group research route :
+  Route::get('/searchgroups/{words}', 'GroupController@searchGroups')->name('searchGroups');
 });
