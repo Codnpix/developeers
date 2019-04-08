@@ -18,6 +18,7 @@ class VersionManager extends Model {
     $versionAuthor = User::find(1);//User::find(Auth::id());
     $version = new Version();
     $version->author_id = $versionAuthor->id;
+    $version->author_name = $versionAuthor->name;
     $version->post_id = $post->id;
     $version->text_content = $request->text_content;
     $version->number = $request->number;
@@ -49,9 +50,11 @@ class VersionManager extends Model {
   }
 
   public static function createInitPostVersion($textContent, $codeSnippets, Post $post) {
+    $authorName = User::find($post->author_id)->name;
     $version = new Version();
     $version->number = '1.0';
     $version->author_id = $post->author_id;
+    $version->author_name = $authorName;
     $version->post_id = $post->id;
     $version->text_content = $textContent;
     $version->votes = [];

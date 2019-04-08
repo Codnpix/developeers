@@ -82,5 +82,6 @@ class GroupController extends Controller {
     public function leaveGroup(Group $group, User $user) {
       $test = GroupManager::leaveGroup($group, $user);
       return "User Successfully leaved the group.";
+      //return $test;
     }
 }

@@ -63,8 +63,8 @@ class GroupManager extends Model {
     $group->name = $request->name;
     $group->description = $request->description;
     $group->keywords = $request->keywords;
-    //$group->votes = [];
     $group->users_id = [$initUser_id];
+    $group->users = [[$initUser_id => User::find($initUser_id)->name]];
     $group->save();
   }
 
@@ -80,9 +80,14 @@ class GroupManager extends Model {
 
     if (!array_search($user->id, $group->users_id)) {
 
-      $groupUsers = $group->users_id;
-      $groupUsers[] = $user->id;
-      $group->users_id = $groupUsers;
+      $groupUsersId = $group->users_id;
+      $groupUsersId[] = $user->id;
+      $group->users_id = $groupUsersId;
+
+      $groupUsers = $group->users;
+      $groupUsers[] = [$user->id => User::find($user->id)->name];
+      $group->users = $groupUsers;
+
       $group->save();
 
     } else return false;
@@ -91,12 +96,18 @@ class GroupManager extends Model {
   public static function leaveGroup(Group $group, User $user) {
 
     $key = array_search($user->id, $group->users_id);
+    $key2 = array_search([$user->id => $user->name], $group->users);
 
-    if ($key) {
+    if ($key && $key2) {
 
-      $groupUsers = $group->users_id;
-      array_splice($groupUsers, $key ,1);
-      $group->users_id = $groupUsers;
+      $groupUsersId = $group->users_id;
+      array_splice($groupUsersId, $key ,1);
+      $group->users_id = $groupUsersId;
+
+      $groupUsers = $group->users;
+      array_splice($groupUsers, $key2, 1);
+      $group->users = $groupUsers;
+
       $group->save();
 
     } else return false;

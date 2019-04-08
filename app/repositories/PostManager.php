@@ -52,6 +52,7 @@ class PostManager extends Model {
       $post->keywords = $request->keywords;
       //$post->author_id = Auth::id();
       $post->author_id = 1;
+      $post->author_name = User::find(1)->name;
       $post->save();
 
       VersionManager::createInitPostVersion($request->text_content, $request->code_snippets, $post);
