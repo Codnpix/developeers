@@ -64,14 +64,19 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Post $post) {
-        $postBuild = PostManager::getPost($post);
-        $user = User::find(1);//User::find(Auth::id());
-        NotificationManager::clearNotifications($user, $post);
-        return $postBuild;
+      $postBuild = PostManager::getPost($post);
+      $user = User::find(1);//User::find(Auth::id());
+      NotificationManager::clearNotifications($user, $post);
+      return $postBuild;
     }
 
     public function showUserPosts(Post $post, User $user) {
       $posts = PostManager::getUserPosts($user);
+      return $posts;
+    }
+
+    public function showAuthorPost(User $user) {
+      $posts = PostManager::getAuthorPost($user);
       return $posts;
     }
 
@@ -80,6 +85,11 @@ class PostController extends Controller {
       $user = User::find(1);//User::find(Auth::id());
       NotificationManager::clearNotifications($user, $post);
       return $postBuild;
+    }
+
+    public function searchPosts(Request $request, $words) {
+      $posts = PostManager::searchPosts($words);
+      return $posts;
     }
 
     /**

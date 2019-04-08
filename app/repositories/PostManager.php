@@ -125,7 +125,7 @@ class PostManager extends Model {
   }
 
   public static function getUserPosts(User $user) {
-    
+
     $userVersions = Version::where('author_id', '=', $user->id)->get();
     $userVersionsPosts = [];
     foreach ($userVersions as $ver) {
@@ -142,6 +142,34 @@ class PostManager extends Model {
     $totalUserPosts = array_unique(array_merge($userVersionsPosts, $userCommentsPosts));
 
     return $totalUserPosts;
+  }
+
+  public static function getAuthorPost(User $user) {
+    $posts = Post::where('author_id', '=', $user->id)->get();
+    return $posts;
+  }
+
+  public static function searchPosts($words) {
+
+    $searchWords = explode(" ", strtolower($words));
+
+    $allPosts = Post::all();
+    $inKeywordsPosts = [];
+
+    foreach ($allPosts as $p) {
+
+      $postKeywords = $p->keywords;//check keywords
+      $titleWords = explode(" ", strtolower($p->title));//check title words
+
+      foreach ($searchWords as $sw) {
+        //search in keywords
+        if (in_array($sw, $postKeywords)) $inKeywordsPosts[] = $p;
+        //search in title
+        if (in_array($sw, $titleWords)) $inKeywordsPosts[] = $p;
+      }
+    }
+
+    return array_unique($inKeywordsPosts);
   }
 
   /**

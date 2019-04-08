@@ -20,16 +20,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::namespace('API')->group(function() {
 
   Route::get('/user/notifications/{user}', 'UserController@getNotifications')->name('getNotifications');
-
   //Route::resource('profile', 'ProfileController')->except(['edit', 'create']);
   Route::get('/posts', 'PostController@index')->name('posts');
   Route::get('/posts/user/{user}', 'PostController@showUserPosts')->name('userPosts');
+  Route::get('/posts/author/{user}', 'PostController@showAuthorPost')->name('authorPosts');
   Route::post('/posts', 'PostController@store')->name('storePost');
   Route::get('/posts/{post}', 'PostController@show')->name('post');
   Route::get('/posts/{post}/{version}', 'PostController@showVersion')->name('postVersion');
   Route::put('/posts/{post}', 'PostController@update')->name('updatePost');
   Route::delete('/posts/{post}', 'PostController@destroy')->name('deletePost');
   Route::put('/votepost/{post}', 'PostController@votePost')->name('votePost');
+  //post research routes :
+  Route::get('/searchposts/{words}', 'PostController@searchPosts')->name('searchPosts');
 
   Route::put('/voteversion/{version}', 'PostController@voteVersion')->name('voteVersion');
   Route::post('/commitversion/{post}', 'PostController@commitVersion')->name('commitVersion');
