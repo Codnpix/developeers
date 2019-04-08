@@ -12,8 +12,10 @@ use App\Version;
 use App\CodeSnippet;
 use App\repositories\PostManager;
 use App\Comment;
+use App\User;
 use App\repositories\CommentManager;
 use App\repositories\VersionManager;
+use App\repositories\NotificationManager;
 
 class PostController extends Controller {
 
@@ -24,15 +26,7 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-
       $posts = PostManager::getAllPosts();
-      //$postsBuild = [];
-
-      // foreach ($posts as $post) {
-      //   $postBuild = PostManager::getPost($post);
-      //   $postsBuild[] = $postBuild;
-      // }
-      //return $postsBuild;
       return $posts;
     }
 
@@ -70,13 +64,37 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show(Post $post) {
-        $postBuild = PostManager::getPost($post);
-        return $postBuild;
+      $postBuild = PostManager::getPost($post);
+      $user = User::find(1);//User::find(Auth::id());
+      NotificationManager::clearNotifications($user, $post);
+      return $postBuild;
+    }
+
+    public function showUserPosts(Post $post, User $user) {
+      $posts = PostManager::getUserPosts($user);
+      return $posts;
+    }
+
+    public function showAuthorPosts(User $user) {
+      $posts = PostManager::getAuthorPost($user);
+      return $posts;
     }
 
     public function showVersion(Post $post, Version $version) {
       $postBuild = PostManager::getPostVersion($post, $version);
+      $user = User::find(1);//User::find(Auth::id());
+      NotificationManager::clearNotifications($user, $post);
       return $postBuild;
+    }
+
+    public function showUserFeed(User $user) {
+      $posts = PostManager::getUserFeed($user);
+      return $posts;
+    }
+
+    public function searchPosts(Request $request, $words) {
+      $posts = PostManager::searchPosts($words);
+      return $posts;
     }
 
     /**

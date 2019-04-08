@@ -41,6 +41,16 @@ class GroupController extends Controller {
         return $group;
     }
 
+    public function showUserGroups(User $user) {
+      $groups = GroupManager::getUserGroups($user);
+      return $groups;
+    }
+
+    public function searchGroups(Request $request, $words) {
+      $groups = GroupManager::searchGroups($words);
+      return $groups;
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -72,5 +82,6 @@ class GroupController extends Controller {
     public function leaveGroup(Group $group, User $user) {
       $test = GroupManager::leaveGroup($group, $user);
       return "User Successfully leaved the group.";
+      //return $test;
     }
 }
