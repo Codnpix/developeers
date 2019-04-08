@@ -23,7 +23,7 @@ Route::namespace('API')->group(function() {
   //Route::resource('profile', 'ProfileController')->except(['edit', 'create']);
   Route::get('/posts', 'PostController@index')->name('posts');
   Route::get('/posts/user/{user}', 'PostController@showUserPosts')->name('userPosts');
-  Route::get('/posts/author/{user}', 'PostController@showAuthorPost')->name('authorPosts');
+  Route::get('/posts/author/{user}', 'PostController@showAuthorPosts')->name('authorPosts');
   Route::post('/posts', 'PostController@store')->name('storePost');
   Route::get('/posts/{post}', 'PostController@show')->name('post');
   Route::get('/posts/{post}/{version}', 'PostController@showVersion')->name('postVersion');
@@ -32,6 +32,8 @@ Route::namespace('API')->group(function() {
   Route::put('/votepost/{post}', 'PostController@votePost')->name('votePost');
   //post research routes :
   Route::get('/searchposts/{words}', 'PostController@searchPosts')->name('searchPosts');
+  //post get user feed
+  Route::get('/postsfeed/{user}', 'PostController@showUserFeed')->name('userFeed');
 
   Route::put('/voteversion/{version}', 'PostController@voteVersion')->name('voteVersion');
   Route::post('/commitversion/{post}', 'PostController@commitVersion')->name('commitVersion');

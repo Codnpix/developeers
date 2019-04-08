@@ -75,7 +75,7 @@ class PostController extends Controller {
       return $posts;
     }
 
-    public function showAuthorPost(User $user) {
+    public function showAuthorPosts(User $user) {
       $posts = PostManager::getAuthorPost($user);
       return $posts;
     }
@@ -85,6 +85,11 @@ class PostController extends Controller {
       $user = User::find(1);//User::find(Auth::id());
       NotificationManager::clearNotifications($user, $post);
       return $postBuild;
+    }
+
+    public function showUserFeed(User $user) {
+      $posts = PostManager::getUserFeed($user);
+      return $posts;
     }
 
     public function searchPosts(Request $request, $words) {

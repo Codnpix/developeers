@@ -13,6 +13,7 @@ use App\repositories\NotificationManager;
 use App\Version;
 use App\CodeSnippet;
 use App\User;
+use App\Group;
 use App\Post;
 use App\Comment;
 
@@ -170,6 +171,25 @@ class PostManager extends Model {
     }
 
     return array_unique($inKeywordsPosts);
+  }
+
+  public static function getUserFeed(User $user) {
+
+    $posts = [];
+    $userGroups = Group::whereIn('users_id', [$user->id])->get();
+    //return $userGroups;
+    foreach ($userGroups as $g) {
+      $gPosts = Post::where('group_id', $g->id)
+      ->orderBy('updated_at', 'desc')
+      ->get();
+      foreach ($gPosts as $p) {
+        $posts[] = $p;
+      }
+    }
+
+    array_splice($posts, 10);
+
+    return $posts;
   }
 
   /**
