@@ -15,8 +15,8 @@ use App\User;
 
 class CommentManager extends Model {
 
-  public static function addComment(Request $request, Version $version) {
-    $author = User::find(1);//User::find(Auth::id());
+  public static function addComment(Request $request, Version $version, User $user) {
+    $author = $user;
     $comment = new Comment();
     $comment->author_id = $author->id;
     $comment->author_name = $author->name;
@@ -30,8 +30,8 @@ class CommentManager extends Model {
     NotificationManager::broadcastOnVersion($author, $version, $notifType, $notifSource);
   }
 
-  public static function voteComment(Request $request, Comment $comment) {
-    $votingUser = User::find(1); //User::find(Auth::id());
+  public static function voteComment(Request $request, Comment $comment, User $user) {
+    $votingUser = $user;
     $commentVotes = $comment->votes;
     $commentVotes[] = $request->vote;
     $comment->votes = $commentVotes;

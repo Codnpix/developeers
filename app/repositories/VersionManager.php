@@ -14,8 +14,8 @@ use App\repositories\NotificationManager;
 
 class VersionManager extends Model {
 
-  public static function commitVersion(Request $request, Post $post) {
-    $versionAuthor = User::find(1);//User::find(Auth::id());
+  public static function commitVersion(Request $request, Post $post, User $user) {
+    $versionAuthor = $user;
     $version = new Version();
     $version->author_id = $versionAuthor->id;
     $version->author_name = $versionAuthor->name;
@@ -36,8 +36,8 @@ class VersionManager extends Model {
     NotificationManager::broadcastOnPost($post, $versionAuthor, $version, $notifType, $notifSource);
   }
 
-  public static function voteVersion(Request $request, Version $version) {
-    $votingUser = User::find(1);//User::find(Auth::id());
+  public static function voteVersion(Request $request, Version $version, User $user) {
+    $votingUser = $user;
     $vote = $request->vote;
     $versionVotes = $version->votes;
     $versionVotes[] = $vote;

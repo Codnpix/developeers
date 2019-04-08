@@ -27,8 +27,13 @@ class GroupController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-      GroupManager::store($request);
-      return "Group created successfully";
+      $user = auth()->user();
+      //return $user;
+      if($user) {
+        GroupManager::store($request, $user);
+        return "Group created successfully";
+      } else return "You are not logged in !";
+
     }
 
     /**
@@ -74,14 +79,15 @@ class GroupController extends Controller {
         return "Group deleted successfully";
     }
 
-    public function joinGroup(Group $group, User $user) {
+    public function joinGroup(Group $group) {
+      $user = auth()->user();
       GroupManager::joinGroup($group, $user);
       return "User successfully joined the group!";
     }
 
-    public function leaveGroup(Group $group, User $user) {
-      $test = GroupManager::leaveGroup($group, $user);
+    public function leaveGroup(Group $group) {
+      $user = auth()->user();
+      GroupManager::leaveGroup($group, $user);
       return "User Successfully leaved the group.";
-      //return $test;
     }
 }

@@ -10,14 +10,16 @@ use App\Version;
 use App\repositories\CommentManager;
 
 class CommentController extends Controller {
-  
+
   public function addComment(Request $request, Version $version) {
-    CommentManager::addComment($request, $version);
+    $user = auth()->user();
+    CommentManager::addComment($request, $version, $user);
     return 'Comment added successfully!';
   }
 
   public function voteComment(Request $request, Comment $comment) {
-    CommentManager::voteComment($request, $comment);
+    $user = auth()->user();
+    CommentManager::voteComment($request, $comment, $user);
     return 'Comment voted successfully!';
   }
 }

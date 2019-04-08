@@ -40,31 +40,15 @@ class GroupManager extends Model {
     return array_unique($inKeywordsGroups);
   }
 
-  public static function store(Request $request) {
-
-    // if (Auth::check()) {
-    //
-    //   $initUser_id = Auth::id();//celui qui crée le groupe est le premier user ajouté au groupe.
-    //
-    //   $group = new Group();
-    //
-    //   $group->name = $request->name;
-    //   $group->description = $request->description;
-    //   $group->keywords = $requests->keywords;
-    //   $group->votes = [];
-    //   $group->users_id = [$initUser_id];
-    //   $group->save();
-    // }
-
-    $initUser_id = 1;
+  public static function store(Request $request, User $user) {
 
     $group = new Group();
 
     $group->name = $request->name;
     $group->description = $request->description;
     $group->keywords = $request->keywords;
-    $group->users_id = [$initUser_id];
-    $group->users = [[$initUser_id => User::find($initUser_id)->name]];
+    $group->users_id = [$user->id];
+    $group->users = [[$user->id => $user->name]];
     $group->save();
   }
 
@@ -78,7 +62,7 @@ class GroupManager extends Model {
 
   public static function joinGroup(Group $group, User $user) {
 
-    if (!array_search($user->id, $group->users_id)) {
+    if (!in_array($user->id, $group->users_id)) {
 
       $groupUsersId = $group->users_id;
       $groupUsersId[] = $user->id;
@@ -98,7 +82,7 @@ class GroupManager extends Model {
     $key = array_search($user->id, $group->users_id);
     $key2 = array_search([$user->id => $user->name], $group->users);
 
-    if ($key && $key2) {
+    if (($key == true || $key == 0) && ($key2 == true || $key2 == 0)) {
 
       $groupUsersId = $group->users_id;
       array_splice($groupUsersId, $key ,1);

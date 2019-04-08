@@ -45,24 +45,24 @@ class PostManager extends Model {
    * @return \Illuminate\Http\Response
    */
   public static function store(Request $request) {
-      $post = new Post();
-      $post->title = $request->title;
-      $post->group_id = $request->group_id;
-      $post->group_name = Group::find($request->group_id)->name;
-      $post->votes = [];
-      $post->keywords = $request->keywords;
-      //$post->author_id = Auth::id();
-      $post->author_id = 1;
-      $post->author_name = User::find(1)->name;
-      $post->save();
+    $user = auth()->user();
+    $post = new Post();
+    $post->title = $request->title;
+    $post->group_id = $request->group_id;
+    $post->group_name = Group::find($request->group_id)->name;
+    $post->votes = [];
+    $post->keywords = $request->keywords;
+    $post->author_id = $user->id;
+    $post->author_name = $user->name;
+    $post->save();
 
-      VersionManager::createInitPostVersion($request->text_content, $request->code_snippets, $post);
+    VersionManager::createInitPostVersion($request->text_content, $request->code_snippets, $post);
 
-      return "success";
+    return "success";
   }
 
   public static function votePost(Request $request, Post $post) {
-    $notifying = User::find(1);//User::find(Auth::id());
+    $notifying = auth()->user();
     $vote = $request->vote;
     $postVotes = $post->votes;
     $postVotes[] = $vote;
@@ -91,7 +91,10 @@ class PostManager extends Model {
     $comments = CommentManager::getComments($version);
 
     foreach ($versions as $v) {
-      array_push($versionsList, array($v->number => $v->id));
+      array_push($versionsList, array(
+        'number' => $v->number,
+        '_id' => $v->id
+      ));
     }
 
     $postBuild = $post;
@@ -114,8 +117,11 @@ class PostManager extends Model {
 
     $versionsList = [];
 
-    foreach ($versions as $version) {
-      array_push($versionsList, array($version->number=>$version->id));
+    foreach ($versions as $v) {
+      array_push($versionsList, array(
+        'number' => $v->number,
+        '_id' => $v->id
+      ));
     }
 
     $postBuild = $post;
@@ -127,8 +133,9 @@ class PostManager extends Model {
     return $postBuild;
   }
 
-  public static function getUserPosts(User $user) {
+  public static function getUserPosts() {
 
+    $user = auth()->user();
     $userVersions = Version::where('author_id', '=', $user->id)->get();
     $userVersionsPosts = [];
     foreach ($userVersions as $ver) {
@@ -147,7 +154,8 @@ class PostManager extends Model {
     return $totalUserPosts;
   }
 
-  public static function getAuthorPost(User $user) {
+  public static function getAuthorPost() {
+    $user = auth()->user();
     $posts = Post::where('author_id', '=', $user->id)->get();
     return $posts;
   }
@@ -204,9 +212,6 @@ class PostManager extends Model {
 
       $post->title = $request->title;
       $post->keywords = $request->keywords;
-      $post->textContent = $request->text_content;
-      $post->group_id = $post->group_id; //inchangable;
-      //$post->author_id = Auth::id();
       $post->save();
   }
 

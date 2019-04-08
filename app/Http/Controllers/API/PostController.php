@@ -19,7 +19,6 @@ use App\repositories\NotificationManager;
 
 class PostController extends Controller {
 
-
     /**
      * Display a listing of the resource.
      *
@@ -47,12 +46,14 @@ class PostController extends Controller {
     }
 
     public function commitVersion(Request $request, Post $post) {
-      VersionManager::commitVersion($request, $post);
+      $user = auth()->user();
+      VersionManager::commitVersion($request, $post, $user);
       return "Version committed successfully !";
     }
 
     public function voteVersion(Request $request, Version $version) {
-      VersionManager::voteVersion($request, $version);
+      $user = auth()->user();
+      VersionManager::voteVersion($request, $version, $user);
       return 'Vote added on version successfully!';
     }
 
