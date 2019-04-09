@@ -41,8 +41,9 @@ class PostController extends Controller {
     }
 
     public function votePost(Request $request, Post $post) {
-      PostManager::votePost($request, $post);
-      return "Vote added on post successfully!";
+      $msg = PostManager::votePost($request, $post);
+      return $msg;
+
     }
 
     public function commitVersion(Request $request, Post $post) {
@@ -53,8 +54,8 @@ class PostController extends Controller {
 
     public function voteVersion(Request $request, Version $version) {
       $user = auth()->user();
-      VersionManager::voteVersion($request, $version, $user);
-      return 'Vote added on version successfully!';
+      $msg = VersionManager::voteVersion($request, $version, $user);
+      return $msg;
     }
 
     /**

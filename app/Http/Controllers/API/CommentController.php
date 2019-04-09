@@ -19,7 +19,7 @@ class CommentController extends Controller {
 
   public function voteComment(Request $request, Comment $comment) {
     $user = auth()->user();
-    CommentManager::voteComment($request, $comment, $user);
-    return 'Comment voted successfully!';
+    $msg = CommentManager::voteComment($request, $comment, $user);
+    return $msg;
   }
 }

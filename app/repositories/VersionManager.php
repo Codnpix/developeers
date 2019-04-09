@@ -37,16 +37,55 @@ class VersionManager extends Model {
   }
 
   public static function voteVersion(Request $request, Version $version, User $user) {
+    
     $votingUser = $user;
     $vote = $request->vote;
     $versionVotes = $version->votes;
-    $versionVotes[] = $vote;
-    $version->votes = $versionVotes;
-    $version->save();
 
     $notifType = "vote";
     $notifSource = "version";
-    NotificationManager::notifyVersionAuthor($votingUser, $version, $notifType, $notifSource);
+
+    $userAlreadyVoted = false;
+    $key;
+
+    foreach ($versionVotes as $k=>$vv) {
+      $userAlreadyVoted = (in_array($votingUser->id, $vv, true)) ? false : true;
+      $key = $userAlreadyVoted ? $k : null;
+    }
+
+    $previousValueVoted = $userAlreadyVoted ? $versionVotes[$key]["vote"] : null;
+
+    if (!$userAlreadyVoted) {
+
+      $versionVotes[] = [
+        "vote"=>$vote,
+        "user"=>[
+          "name"=>$votingUser->name,
+          "id"=>$votingUser->id
+        ]
+      ];
+
+      $version->votes = $versionVotes;
+      $version->save();
+
+      NotificationManager::notifyVersionAuthor($votingUser, $version, $notifType, $notifSource);
+
+      return "Vote added on version successfully!";
+
+    } else if ($userAlreadyVoted) {
+
+      $prevVote = $versionVotes[$key]["vote"];
+
+      if ($prevVote != $vote) {
+        $versionVotes[$key]["vote"] = $vote;
+        $version->votes = $versionVotes;
+        $version->save();
+        NotificationManager::notifyVersionAuthor($votingUser, $version, $notifType, $notifSource);
+
+        return "Vote has been updated successfully !";
+      } else return "User already voted";
+
+    }
   }
 
   public static function createInitPostVersion($textContent, $codeSnippets, Post $post) {

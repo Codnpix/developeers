@@ -31,15 +31,55 @@ class CommentManager extends Model {
   }
 
   public static function voteComment(Request $request, Comment $comment, User $user) {
+
     $votingUser = $user;
+    $vote = $request->vote;
     $commentVotes = $comment->votes;
-    $commentVotes[] = $request->vote;
-    $comment->votes = $commentVotes;
-    $comment->save();
 
     $notifType = "vote";
     $notifSource = "comment";
-    NotificationManager::notifyCommentAuthor($votingUser, $comment, $notifType, $notifSource);
+
+    $userAlreadyVoted = false;
+    $key;
+
+    foreach ($commentVotes as $k=>$cv) {
+      $userAlreadyVoted = (in_array($votingUser->id, $cv, true)) ? false : true;
+      $key = $userAlreadyVoted ? $k : null;
+    }
+
+    $previousValueVoted = $userAlreadyVoted ? $commentVotes[$key]["vote"] : null;
+
+    if (!$userAlreadyVoted) {
+
+      $commentVotes[] = [
+        "vote"=>$vote,
+        "user"=>[
+          "name"=>$votingUser->name,
+          "id"=>$votingUser->id
+        ]
+      ];
+
+      $comment->votes = $commentVotes;
+      $comment->save();
+
+      NotificationManager::notifyCommentAuthor($votingUser, $comment, $notifType, $notifSource);
+
+      return "Vote added on comment successfully!";
+
+    } else if ($userAlreadyVoted) {
+
+      $prevVote = $commentVotes[$key]["vote"];
+
+      if ($prevVote != $vote) {
+        $commentVotes[$key]["vote"] = $vote;
+        $comment->votes = $commentVotes;
+        $comment->save();
+
+        NotificationManager::notifyCommentAuthor($votingUser, $comment, $notifType, $notifSource);
+
+        return "Vote has been updated successfully !";
+      } else return "User already voted";
+    }
   }
 
   public static function getComments(Version $version) {

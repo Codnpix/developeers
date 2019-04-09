@@ -62,16 +62,55 @@ class PostManager extends Model {
   }
 
   public static function votePost(Request $request, Post $post) {
+
     $notifying = auth()->user();
     $vote = $request->vote;
     $postVotes = $post->votes;
-    $postVotes[] = $vote;
-    $post->votes = $postVotes;
-    $post->save();
 
     $notifType = "vote";
     $notifSource = "post";
-    NotificationManager::notifyPostAuthor($post, $notifying, $notifType, $notifSource);
+
+    $userAlreadyVoted = false;
+    $key;
+
+    foreach ($postVotes as $k=>$pv) {
+      $userAlreadyVoted = (in_array($notifying->id, $pv, true)) ? false : true;
+      $key = $userAlreadyVoted ? $k : null;
+    }
+
+    $previousValueVoted = $userAlreadyVoted ? $postVotes[$key]["vote"] : null;
+
+    if (!$userAlreadyVoted) {
+
+      $postVotes[] = [
+        "vote"=>$vote,
+        "user"=>[
+          "name"=>$notifying->name,
+          "id"=>$notifying->id
+        ]
+      ];
+      $post->votes = $postVotes;
+      $post->save();
+
+      NotificationManager::notifyPostAuthor($post, $notifying, $notifType, $notifSource);
+
+      return "Vote added on post successfully!";
+
+    } else if ($userAlreadyVoted) {
+
+      $prevVote = $postVotes[$key]["vote"];
+
+      if ($prevVote != $vote) {
+        $postVotes[$key]["vote"] = $vote;
+        $post->votes = $postVotes;
+        $post->save();
+        NotificationManager::notifyPostAuthor($post, $notifying, $notifType, $notifSource);
+
+        return "Vote has been updated successfully !";
+      } else return "User already voted";
+
+    }
+
   }
 
   /**

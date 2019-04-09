@@ -116,6 +116,10 @@ class NotificationManager extends Model {
        $notif->notified_user_id = $notified->id;
        $notif->message = $message;
        $notif->request_route_link = '/posts/'.$post->id.'/'.$version->id;
+       $notif->version = array(
+         "id"=>$version->id,
+         "number"=>$version->number
+       );
        $notif->post_id = $post->id;
        $notif->save();
      }
