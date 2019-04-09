@@ -180,7 +180,7 @@ class PostManager extends Model {
   public static function getUserPosts() {
 
     $user = auth()->user();
-    $userVersions = Version::where('author_id', '=', $user->id)->get();
+    $userVersions = Version::where('author_id', $user->id)->get();
     $userVersionsPosts = [];
     foreach ($userVersions as $ver) {
       $p = Post::find($ver->post_id);
