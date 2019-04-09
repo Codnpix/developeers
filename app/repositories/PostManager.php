@@ -38,6 +38,11 @@ class PostManager extends Model {
     return $posts;
   }
 
+  public static function getGroupPosts(Group $group) {
+    $posts = Post::where('group_id', $group->id)->get();
+    return $posts;
+  }
+
   /**
    * Store a newly created resource in storage.
    *

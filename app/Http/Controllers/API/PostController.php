@@ -13,6 +13,7 @@ use App\CodeSnippet;
 use App\repositories\PostManager;
 use App\Comment;
 use App\User;
+use App\Group;
 use App\repositories\CommentManager;
 use App\repositories\VersionManager;
 use App\repositories\NotificationManager;
@@ -79,6 +80,11 @@ class PostController extends Controller {
 
     public function showAuthorPosts(User $user) {
       $posts = PostManager::getAuthorPost($user);
+      return $posts;
+    }
+
+    public function showGroupPosts(Group $group) {
+      $posts = PostManager::getGroupPosts($group);
       return $posts;
     }
 
