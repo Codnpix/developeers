@@ -24,7 +24,7 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::put('user/update', 'PassportController@updateUser')->name('user.update');
     //NOTIFICATIONS
     //get all user notifications :
-    Route::get('/user/notifications/{user}', 'UserController@getNotifications')->name('user.notifications');
+    Route::get('/user/notifications', 'UserController@getNotifications')->name('user.notifications');
     //POST
     //get all posts (heavy!)
     Route::get('/posts', 'PostController@index')->name('posts');
@@ -49,7 +49,7 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     //post research routes :
     Route::get('/searchposts/{words}', 'PostController@searchPosts')->name('posts.search');
     //post get user feed
-    Route::get('/postsfeed/{user}', 'PostController@showUserFeed')->name('posts.feed');
+    Route::get('/postsfeed', 'PostController@showUserFeed')->name('posts.feed');
 
     //VERSIONS
     //vote for a version (vote = true or false)
