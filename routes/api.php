@@ -12,12 +12,14 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+//FREE ACCESS
 Route::namespace('API')->group(function(){
   Route::post('login', 'PassportController@login')->name('login');
   Route::post('register', 'PassportController@register')->name('register');
 });
 
-
+//AUTHENTICATED ONLY
 Route::middleware('auth:api')->namespace('API')->group(function () {
     //USER
     Route::get('user', 'PassportController@details')->name('user.details');
@@ -26,30 +28,30 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     //get all user notifications :
     Route::get('/user/notifications', 'UserController@getNotifications')->name('user.notifications');
     //POST
-    //get all posts (heavy!)
-    Route::get('/posts', 'PostController@index')->name('posts');
     //get all posts wich user is involved on. :
-    Route::get('/posts/user', 'PostController@showUserPosts')->name('posts.user');
+    Route::get('/userposts', 'PostController@showUserPosts')->name('posts.user');
     //get all posts whose author is the user. :
-    Route::get('/posts/author', 'PostController@showAuthorPosts')->name('posts.author');
-    //get all posts in a specific group:
-    Route::get('/posts/group/{group}', 'PostController@showGroupPosts')->name('posts.group');
+    Route::get('/authorposts', 'PostController@showAuthorPosts')->name('posts.author');
     //store new post :
     Route::post('/posts', 'PostController@store')->name('posts.store');
-    //get a specific post by its id (default version : last version):
-    Route::get('/posts/{post}', 'PostController@show')->name('posts.post');
-    //get a specific version of a specific post :
-    Route::get('/posts/{post}/{version}', 'PostController@showVersion')->name('posts.version');
     //modify post data (title, keywords) :
     Route::put('/posts/{post}', 'PostController@update')->name('posts.update');
     //delete a post
     Route::delete('/posts/{post}', 'PostController@destroy')->name('posts.delete');
     //vote for a post (vote = true or false)
     Route::put('/votepost/{post}', 'PostController@votePost')->name('posts.vote');
-    //post research routes :
-    Route::get('/searchposts/{words}', 'PostController@searchPosts')->name('posts.search');
     //post get user feed
     Route::get('/postsfeed', 'PostController@showUserFeed')->name('posts.feed');
+    //get all posts (heavy!)
+    Route::get('/posts', 'PostController@index')->name('posts');
+    //get all posts in a specific group:
+    Route::get('/posts/group/{group}', 'PostController@showGroupPosts')->name('posts.group');
+    //get a specific post by its id (default version : last version):
+    Route::get('/posts/{post}', 'PostController@show')->name('posts.post');
+    //get a specific version of a specific post :
+    Route::get('/posts/{post}/{version}', 'PostController@showVersion')->name('posts.version');
+    //post research routes :
+    Route::get('/searchposts/{words}', 'PostController@searchPosts')->name('posts.search');
 
     //VERSIONS
     //vote for a version (vote = true or false)
@@ -82,6 +84,5 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::put('/groups/leave/{group}', 'GroupController@leaveGroup')->name('groups.leave');
     //group research route :
     Route::get('/searchgroups/{words}', 'GroupController@searchGroups')->name('groups.search');
-
     //Route::resource('profile', 'ProfileController')->except(['edit', 'create']);
 });

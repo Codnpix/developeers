@@ -185,7 +185,7 @@ class PostManager extends Model {
       $p = Post::find($ver->post_id);
       $userVersionsPosts[] = $p;
     }
-    $userComments = Comment::where('author_id', '=', $user->id)->get();
+    $userComments = Comment::where('author_id', $user->id)->get();
     $userCommentsPosts = [];
     foreach ($userComments as $com) {
       $ver = Version::find($com->version_id);
@@ -194,12 +194,17 @@ class PostManager extends Model {
     }
     $totalUserPosts = array_unique(array_merge($userVersionsPosts, $userCommentsPosts));
 
-    return $totalUserPosts;
+    //this need to be done in order to get an iterable array in response.... weird..
+    $total = [];
+    foreach ($totalUserPosts as $tp) {
+      $total[] = $tp;
+    }
+    return $total;
   }
 
   public static function getAuthorPost() {
     $user = auth()->user();
-    $posts = Post::where('author_id', '=', $user->id)->get();
+    $posts = Post::where('author_id', $user->id)->get();
     return $posts;
   }
 
@@ -230,7 +235,6 @@ class PostManager extends Model {
 
     $posts = [];
     $userGroups = Group::whereIn('users_id', [$user->id])->get();
-    //return $userGroups;
     foreach ($userGroups as $g) {
       $gPosts = Post::where('group_id', $g->id)
       ->orderBy('updated_at', 'desc')
