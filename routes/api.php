@@ -67,7 +67,7 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     //get all groups
     Route::get('/groups', 'GroupController@index')->name('groups');
     //get all groups followed by the user
-    Route::get('/groups/user/{user}', 'GroupController@showUserGroups')->name('groups.user');
+    Route::get('/groups/user', 'GroupController@showUserGroups')->name('groups.user');
     //store a new group
     Route::post('/groups', 'GroupController@store')->name('groups.store');
     //get a specific group

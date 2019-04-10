@@ -46,7 +46,8 @@ class GroupController extends Controller {
         return $group;
     }
 
-    public function showUserGroups(User $user) {
+    public function showUserGroups() {
+      $user = auth()->user();
       $groups = GroupManager::getUserGroups($user);
       return $groups;
     }

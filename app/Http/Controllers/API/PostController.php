@@ -68,17 +68,19 @@ class PostController extends Controller {
      */
     public function show(Post $post) {
       $postBuild = PostManager::getPost($post);
-      $user = User::find(1);//User::find(Auth::id());
+      $user = auth()->user();
       NotificationManager::clearNotifications($user, $post);
       return $postBuild;
     }
 
-    public function showUserPosts(Post $post, User $user) {
+    public function showUserPosts(Post $post) {
+      $user = auth()->user();
       $posts = PostManager::getUserPosts($user);
       return $posts;
     }
 
-    public function showAuthorPosts(User $user) {
+    public function showAuthorPosts() {
+      $user = auth()->user();
       $posts = PostManager::getAuthorPost($user);
       return $posts;
     }
@@ -95,7 +97,8 @@ class PostController extends Controller {
       return $postBuild;
     }
 
-    public function showUserFeed(User $user) {
+    public function showUserFeed() {
+      $user = auth()->user();
       $posts = PostManager::getUserFeed($user);
       return $posts;
     }

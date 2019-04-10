@@ -177,9 +177,8 @@ class PostManager extends Model {
     return $postBuild;
   }
 
-  public static function getUserPosts() {
+  public static function getUserPosts(User $user) {
 
-    $user = auth()->user();
     $userVersions = Version::where('author_id', $user->id)->get();
     $userVersionsPosts = [];
     foreach ($userVersions as $ver) {

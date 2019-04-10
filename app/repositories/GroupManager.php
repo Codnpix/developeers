@@ -13,7 +13,7 @@ use App\User;
 class GroupManager extends Model {
 
   public static function getUserGroups(User $user) {
-    $groups = Group::whereIn('users_id', [1])->get();
+    $groups = Group::whereIn('users_id', [$user->id])->get();
     return $groups;
   }
 
