@@ -238,6 +238,8 @@ class PostManager extends Model {
       foreach ($gPosts as $p) {
         $posts[] = $p;
       }
+
+      return $posts;
     }
 
     array_splice($posts, 10);
