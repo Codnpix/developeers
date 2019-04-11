@@ -50,8 +50,8 @@ class GroupManager extends Model {
     $group->users_id = [$user->id];
     $group->users = [[$user->id => $user->name]];
     $group->save();
-    
-    return $group->id;
+
+    return $group;
   }
 
   public static function updateGroup(Request $request, Group $group) {
