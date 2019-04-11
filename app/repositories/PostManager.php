@@ -55,6 +55,7 @@ class PostManager extends Model {
     $post->title = $request->title;
     $post->group_id = $request->group_id;
     $post->group_name = Group::find($request->group_id)->name;
+    $post->group = Group::find($request->group_id);
     $post->votes = [];
     $post->keywords = $request->keywords;
     $post->author_id = $user->id;
