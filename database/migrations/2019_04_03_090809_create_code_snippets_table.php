@@ -25,7 +25,7 @@ class CreateCodeSnippetsTable extends Migration
         ->table('code_snippets', function (Blueprint $collection)
         {
             $collection->string('language');
-            $collection->string('content')->unique();
+            $collection->string('content');
             $collection->timestamps();
         });
     }
