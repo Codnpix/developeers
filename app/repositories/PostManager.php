@@ -55,7 +55,14 @@ class PostManager extends Model {
     $post->title = $request->title;
     $post->group_id = $request->group_id;
     $post->group_name = Group::find($request->group_id)->name;
-    $post->group = Group::find($request->group_id);
+    $post->group = array(
+      "_id"=> Group::find($request->group_id)->id,
+      "name"=> Group::find($request->group_id)->name,
+      "description"=>Group::find($request->group_id)->description,
+      "keywords"=>Group::find($request->group_id)->keywords,
+      "users_id"=>Group::find($request->group_id)->users_id,
+      "users"=>Group::find($request->group_id)->users
+    );
     $post->votes = [];
     $post->keywords = $request->keywords;
     $post->author_id = $user->id;
@@ -64,7 +71,7 @@ class PostManager extends Model {
 
     VersionManager::createInitPostVersion($request->text_content, $request->code_snippets, $post);
 
-    return "success";
+    return $post;
   }
 
   public static function votePost(Request $request, Post $post) {

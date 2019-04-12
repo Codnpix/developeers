@@ -37,8 +37,8 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        PostManager::store($request);
-        return "success";
+        $post = PostManager::store($request);
+        return $post;
     }
 
     public function votePost(Request $request, Post $post) {

@@ -30,9 +30,8 @@ class GroupController extends Controller {
       $user = auth()->user();
       //return $user;
       if($user) {
-        $newGroupId = GroupManager::store($request, $user);
-        return $newGroupId;
-        //return "Group created successfully";
+        $newGroup = GroupManager::store($request, $user);
+        return $newGroup;
       } else return "You are not logged in !";
 
     }
