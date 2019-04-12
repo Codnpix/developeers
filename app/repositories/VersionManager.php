@@ -37,7 +37,7 @@ class VersionManager extends Model {
   }
 
   public static function voteVersion(Request $request, Version $version, User $user) {
-    
+
     $votingUser = $user;
     $vote = $request->vote;
     $versionVotes = $version->votes;
@@ -49,7 +49,7 @@ class VersionManager extends Model {
     $key;
 
     foreach ($versionVotes as $k=>$vv) {
-      $userAlreadyVoted = (in_array($votingUser->id, $vv, true)) ? false : true;
+      $userAlreadyVoted = ($vv['user']['id'] == $votingUser->id) ? true : false;
       $key = $userAlreadyVoted ? $k : null;
     }
 

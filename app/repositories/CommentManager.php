@@ -41,9 +41,9 @@ class CommentManager extends Model {
 
     $userAlreadyVoted = false;
     $key;
-
+    
     foreach ($commentVotes as $k=>$cv) {
-      $userAlreadyVoted = (in_array($votingUser->id, $cv, true)) ? false : true;
+      $userAlreadyVoted = ($cv['user']['id'] == $votingUser->id) ? true : false;
       $key = $userAlreadyVoted ? $k : null;
     }
 

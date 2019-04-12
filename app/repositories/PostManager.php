@@ -74,9 +74,9 @@ class PostManager extends Model {
     return $post;
   }
 
-  public static function votePost(Request $request, Post $post) {
+  public static function votePost(Request $request, Post $post, User $user) {
 
-    $notifying = auth()->user();
+    $notifying = $user;
     $vote = $request->vote;
     $postVotes = $post->votes;
 
@@ -87,7 +87,7 @@ class PostManager extends Model {
     $key;
 
     foreach ($postVotes as $k=>$pv) {
-      $userAlreadyVoted = (in_array($notifying->id, $pv, true)) ? false : true;
+      $userAlreadyVoted = ($pv['user']['id'] == $notifying->id) ? true : false;
       $key = $userAlreadyVoted ? $k : null;
     }
 
@@ -111,9 +111,7 @@ class PostManager extends Model {
 
     } else if ($userAlreadyVoted) {
 
-      $prevVote = $postVotes[$key]["vote"];
-
-      if ($prevVote != $vote) {
+      if ($previousValueVoted != $vote) {
         $postVotes[$key]["vote"] = $vote;
         $post->votes = $postVotes;
         $post->save();
@@ -240,22 +238,14 @@ class PostManager extends Model {
   }
 
   public static function getUserFeed(User $user) {
-
     $posts = [];
     $userGroups = Group::whereIn('users_id', [$user->id])->get();
     foreach ($userGroups as $g) {
-      $gPosts = Post::where('group_id', $g->id)
-      ->orderBy('updated_at', 'desc')
-      ->get();
+      $gPosts = Post::where('group_id', $g->id)->get();
       foreach ($gPosts as $p) {
         $posts[] = $p;
       }
-
-      return $posts;
     }
-
-    array_splice($posts, 10);
-
     return $posts;
   }
 

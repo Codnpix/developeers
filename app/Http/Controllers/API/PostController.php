@@ -42,7 +42,8 @@ class PostController extends Controller {
     }
 
     public function votePost(Request $request, Post $post) {
-      $msg = PostManager::votePost($request, $post);
+      $user = auth()->user();
+      $msg = PostManager::votePost($request, $post, $user);
       return $msg;
 
     }
