@@ -107,6 +107,17 @@ class VersionManager extends Model {
     }
   }
 
+  public static function updateVersion(Request $request, Version $version) {
+
+    $newSnippets = $request->code_snippets;
+    CodeSnippetManager::updateSnippets($version, $newSnippets);
+
+    $version->text_content = $request->text_content;
+    $version->save();
+
+    return "Version updated successfully";
+  }
+
   public static function getPostVersions(Post $post) {
     $versions = Version::where('post_id', $post->id)->get();
     return $versions;

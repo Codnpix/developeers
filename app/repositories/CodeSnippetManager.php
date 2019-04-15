@@ -19,4 +19,13 @@ class CodeSnippetManager extends Model {
     $snippets = CodeSnippet::where('version_id', $version->id)->get();
     return $snippets;
   }
+
+  public static function updateSnippets(Version $version, $snippets) {
+    $versionCurrentSnippets = CodeSnippet::where('version_id', $version->id)->get();
+    for($i = 0; $i < count($snippets); $i++) {
+      $versionCurrentSnippets[$i]->content = $snippets[$i];
+      $versionCurrentSnippets[$i]->version_id = $version->id;
+      $versionCurrentSnippets[$i]->save();
+    }
+  }
 }

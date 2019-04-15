@@ -121,6 +121,16 @@ class PostController extends Controller {
         return $response;
     }
 
+    public function updateVersion(Request $request, Version $version) {
+      $response = VersionManager::updateVersion($request, $version);
+      return $response;
+    }
+
+    public function updateComment(Request $request, Comment $comment) {
+      $response = CommentManager::updateComment($request, $comment);
+      return $response;
+    }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -134,6 +144,11 @@ class PostController extends Controller {
 
     public function destroyPostVersion(Version $version) {
       $response = VersionManager::destroyVersion($version);
+      return $response;
+    }
+
+    public function destroyComment(Comment $comment) {
+      $response = CommentManager::destroyComment($comment);
       return $response;
     }
 }

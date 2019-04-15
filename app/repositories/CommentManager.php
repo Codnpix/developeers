@@ -41,7 +41,7 @@ class CommentManager extends Model {
 
     $userAlreadyVoted = false;
     $key;
-    
+
     foreach ($commentVotes as $k=>$cv) {
       $userAlreadyVoted = ($cv['user']['id'] == $votingUser->id) ? true : false;
       $key = $userAlreadyVoted ? $k : null;
@@ -85,5 +85,16 @@ class CommentManager extends Model {
   public static function getComments(Version $version) {
     $comments = Comment::where('version_id', $version->id)->get();
     return $comments;
+  }
+
+  public static function updateComment(Request $request, Comment $comment) {
+    $comment->content = $request->content;
+    $comment->save();
+    return "Comment updated successfully.";
+  }
+
+  public static function destroyComment(Comment $comment) {
+    $comment->delete();
+    return "Comment deleted successfully";
   }
 }
