@@ -117,8 +117,8 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Post $post) {
-        PostManager::updatePost($request, $post);
-        return "Post successfully updated!";
+        $response = PostManager::updatePost($request, $post);
+        return $response;
     }
 
     /**
@@ -128,7 +128,12 @@ class PostController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(Post $post) {
-        PostManager::destroyPost($post);
-        return "Post deleted successfully";
+        $response = PostManager::destroyPost($post);
+        return $response;
+    }
+
+    public function destroyPostVersion(Version $version) {
+      $response = VersionManager::destroyVersion($version);
+      return $response;
     }
 }

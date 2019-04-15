@@ -4,6 +4,7 @@ namespace App\repositories;
 
 use Illuminate\Database\Eloquent\Model;
 use App\repositories\CodeSnippetManager;
+use App\repositories\CommentManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Version;
@@ -109,5 +110,18 @@ class VersionManager extends Model {
   public static function getPostVersions(Post $post) {
     $versions = Version::where('post_id', $post->id)->get();
     return $versions;
+  }
+
+  public static function destroyVersion(Version $version) {
+    $snippets = CodeSnippetManager::getVersionSnippets($version);
+    $comments = CommentManager::getComments($version);
+    foreach($snippets as $snippet) {
+      $snippet->delete();
+    }
+    foreach($comments as $comment) {
+      $comment->delete();
+    }
+    $version->delete();
+    return "Version deleted successfully";
   }
 }

@@ -260,6 +260,7 @@ class PostManager extends Model {
       $post->title = $request->title;
       $post->keywords = $request->keywords;
       $post->save();
+      return "Post successfully updated!";
   }
 
   /**
@@ -274,11 +275,16 @@ class PostManager extends Model {
 
       foreach ($postVersions as $version) {
         $snippets = CodeSnippetManager::getVersionSnippets($version);
+        $comments = CommentManager::getComments($version);
         foreach ($snippets as $snippet) {
           $snippet->delete();
+        }
+        foreach ($comments as $comment) {
+          $comment->delete();
         }
         $version->delete();
       }
       $post->delete();
+      return "Post deleted successfully";
   }
 }

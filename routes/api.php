@@ -52,6 +52,8 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::get('/posts/{post}/{version}', 'PostController@showVersion')->name('posts.version');
     //post research routes :
     Route::get('/searchposts/{words}', 'PostController@searchPosts')->name('posts.search');
+    //delete post specific version
+    Route::delete('/deleteversion/{version}', 'PostController@destroyPostVersion')->name('posts.deleteVersion');
 
     //VERSIONS
     //vote for a version (vote = true or false)
