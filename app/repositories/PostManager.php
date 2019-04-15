@@ -270,10 +270,10 @@ class PostManager extends Model {
    */
   public static function destroyPost(Post $post) {
 
-      $postVersions = self::getPostVersions($post);
+      $postVersions = VersionManager::getPostVersions($post);
 
       foreach ($postVersions as $version) {
-        $snippets = self::getVersionSnippets($version);
+        $snippets = CodeSnippetManager::getVersionSnippets($version);
         foreach ($snippets as $snippet) {
           $snippet->delete();
         }
