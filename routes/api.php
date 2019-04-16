@@ -44,7 +44,7 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::put('user/update', 'PassportController@updateUser')->name('user.update');
     //NOTIFICATIONS
     //get all user notifications :
-    Route::get('/user/notifications', 'UserController@getNotifications')->name('user.notifications');
+    Route::get('/notifications', 'UserController@getNotifications')->name('user.notifications');
     //POST
     //get all posts wich user is involved on. :
     Route::get('/userposts', 'PostController@showUserPosts')->name('posts.user');
