@@ -18,15 +18,23 @@ Route::namespace('API')->group(function(){
   Route::post('login', 'PassportController@login')->name('login');
   Route::post('register', 'PassportController@register')->name('register');
 
-  // //GUEST POSTS & Groups
-  // Route::get('/guest/allposts', 'GuestController@showAllPosts')->name('guest.allposts');
-  // Route::get('/guest/post/{post}', 'GuestController@showPost')->name('guest.post');
-  // Route::get('/guest/group/{group}', 'GuestController@showGroup')->name('guest.group');
-  // Route::get('/guest/groupposts/{group}', 'GuestController@showGroupPosts')->name('guest.groupPosts');
-  // Route::get('/guest/postversion/{post}/{version}', 'GuestController@showVersion')->name('guest.postVersion');
-  // Route::get('/guest/postsfeed', 'GuestController@showGuestFeed')->name('guest.postsfeed');
-  // Route::post('/guest/searchpost', 'GuestController@searchPosts')->name('guest.searchPosts');
-  // Route::posts('/guest/searchgroups', 'GuestController@searchGroups')->name('guest.searchGroups');
+  //GUEST POSTS & Groups
+  //all posts :
+  Route::get('/guest/allposts', 'GuestController@showAllPosts')->name('guest.allposts');
+  //single posts by id :
+  Route::get('/guest/posts/{post}', 'GuestController@showPost')->name('guest.post');
+  //single group by id :
+  Route::get('/guest/groups/{group}', 'GuestController@showGroup')->name('guest.group');
+  //posts list in a group :
+  Route::get('/guest/groupposts/{group}', 'GuestController@showGroupPosts')->name('guest.groupPosts');
+  //Specific version of a post :
+  Route::get('/guest/postversion/{post}/{version}', 'GuestController@showVersion')->name('guest.postVersion');
+  //posts feed :
+  Route::get('/guest/postsfeed', 'GuestController@showGuestFeed')->name('guest.postsfeed');
+  //search posts :
+  Route::get('/guest/searchposts/{words}', 'GuestController@searchPosts')->name('guest.searchPosts');
+  //search groups :
+  Route::get('/guest/searchgroups/{words}', 'GuestController@searchGroups')->name('guest.searchGroups');
 });
 
 //AUTHENTICATED ONLY

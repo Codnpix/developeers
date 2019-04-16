@@ -124,13 +124,6 @@ class PostManager extends Model {
 
   }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  Post
-   * @param Version
-   * @return \Illuminate\Http\Response
-   */
   public static function getPostVersion(Post $post, Version $version) {
 
     $snippets = CodeSnippetManager::getVersionSnippets($version);
@@ -195,6 +188,7 @@ class PostManager extends Model {
     $userCommentsPosts = [];
     foreach ($userComments as $com) {
       $ver = Version::find($com->version_id);
+      $test[] = $ver;
       $p = Post::find($ver->post_id);
       $userCommentsPosts[] = $p;
     }
@@ -238,6 +232,7 @@ class PostManager extends Model {
   }
 
   public static function getUserFeed(User $user) {
+      //À AMELIORER !
     $posts = [];
     $userGroups = Group::whereIn('users_id', [$user->id])->get();
     foreach ($userGroups as $g) {
@@ -250,7 +245,9 @@ class PostManager extends Model {
   }
 
   public static function getGuestFeed() {
-    //posts les plus récents.. ?
+      //À AMELIORER !
+      $posts = Post::orderBy('created_at', 'desc')->get();
+      return $posts;
   }
 
   /**
