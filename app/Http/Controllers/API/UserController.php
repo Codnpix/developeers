@@ -9,8 +9,9 @@ use App\repositories\NotificationManager;
 
 class UserController extends Controller {
 
-    public function getNotifications(User $user) {
-      $notifs = NotificationManager::getNotifications($user);
-      return $notifs;
+    public function getNotifications() {
+        $user = auth()->user();
+        $notifs = NotificationManager::getNotifications($user);
+        return $notifs;
     }
 }

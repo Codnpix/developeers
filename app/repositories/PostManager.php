@@ -181,8 +181,10 @@ class PostManager extends Model {
     $userVersions = Version::where('author_id', $user->id)->get();
     $userVersionsPosts = [];
     foreach ($userVersions as $ver) {
-      $p = Post::find($ver->post_id);
-      $userVersionsPosts[] = $p;
+        if(!$ver->number == '1.0') {//prevent redundancy with getAuthorPost
+            $p = Post::find($ver->post_id);
+            $userVersionsPosts[] = $p;
+        }
     }
     $userComments = Comment::where('author_id', $user->id)->get();
     $userCommentsPosts = [];
