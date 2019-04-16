@@ -230,7 +230,6 @@ class PostManager extends Model {
         if (in_array($sw, $titleWords)) $inKeywordsPosts[] = $p;
       }
     }
-
     return array_unique($inKeywordsPosts);
   }
 
