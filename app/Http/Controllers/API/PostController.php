@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Post;
 use Illuminate\Support\Facades\Auth;
-//use App\Http\Controllers\API\VersionController;
-//use App\VersionManager;
 use App\Version;
 use App\CodeSnippet;
 use App\repositories\PostManager;
@@ -64,7 +62,6 @@ class PostController extends Controller {
      * Display the specified resource.
      *
      * @param  Post
-     * @param Version
      * @return \Illuminate\Http\Response
      */
     public function show(Post $post) {
@@ -93,7 +90,7 @@ class PostController extends Controller {
 
     public function showVersion(Post $post, Version $version) {
       $postBuild = PostManager::getPostVersion($post, $version);
-      $user = User::find(1);//User::find(Auth::id());
+      $user = auth()->user();
       NotificationManager::clearNotifications($user, $post);
       return $postBuild;
     }

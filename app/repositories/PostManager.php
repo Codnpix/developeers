@@ -249,6 +249,10 @@ class PostManager extends Model {
     return $posts;
   }
 
+  public static function getGuestFeed() {
+    //posts les plus récents.. ?
+  }
+
   /**
    * Update the specified resource in storage.
    *
