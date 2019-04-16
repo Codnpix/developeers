@@ -18,15 +18,15 @@ Route::namespace('API')->group(function(){
   Route::post('login', 'PassportController@login')->name('login');
   Route::post('register', 'PassportController@register')->name('register');
 
-  //GUEST POSTS & Groups
-  Route::get('/guest/allposts', 'GuestController@showAllPosts')->name('guest.allposts');
-  Route::get('/guest/post/{post}', 'GuestController@showPost')->name('guest.post');
-  Route::get('/guest/group/{group}', 'GuestController@showGroup')->name('guest.group');
-  Route::get('/guest/groupposts/{group}', 'GuestController@showGroupPosts')->name('guest.groupPosts');
-  Route::get('/guest/postversion/{post}/{version}', 'GuestController@showVersion')->name('guest.postVersion');
-  Route::get('/guest/postsfeed', 'GuestController@showGuestFeed')->name('guest.postsfeed');
-  Route::post('/guest/searchpost', 'GuestController@searchPosts')->name('guest.searchPosts');
-  Route::posts('/guest/searchgroups', 'GuestController@searchGroups')->name('guest.searchGroups');
+  // //GUEST POSTS & Groups
+  // Route::get('/guest/allposts', 'GuestController@showAllPosts')->name('guest.allposts');
+  // Route::get('/guest/post/{post}', 'GuestController@showPost')->name('guest.post');
+  // Route::get('/guest/group/{group}', 'GuestController@showGroup')->name('guest.group');
+  // Route::get('/guest/groupposts/{group}', 'GuestController@showGroupPosts')->name('guest.groupPosts');
+  // Route::get('/guest/postversion/{post}/{version}', 'GuestController@showVersion')->name('guest.postVersion');
+  // Route::get('/guest/postsfeed', 'GuestController@showGuestFeed')->name('guest.postsfeed');
+  // Route::post('/guest/searchpost', 'GuestController@searchPosts')->name('guest.searchPosts');
+  // Route::posts('/guest/searchgroups', 'GuestController@searchGroups')->name('guest.searchGroups');
 });
 
 //AUTHENTICATED ONLY
