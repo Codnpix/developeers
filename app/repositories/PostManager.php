@@ -213,7 +213,7 @@ class PostManager extends Model {
 
   public static function searchPosts($words) {
 
-    $searchWords = explode(" ", strtolower($words));
+    $searchWords = explode("-", strtolower($words));
 
     $allPosts = Post::all();
     $inKeywordsPosts = [];
@@ -230,7 +230,14 @@ class PostManager extends Model {
         if (in_array($sw, $titleWords)) $inKeywordsPosts[] = $p;
       }
     }
-    return array_unique($inKeywordsPosts);
+
+    $total = array_unique($inKeywordsPosts);
+    $searchResult = [];
+    foreach($total as $tp) {
+        $searchResult[] = $tp;
+    }
+    
+    return $searchResult;
   }
 
   public static function getUserFeed(User $user) {

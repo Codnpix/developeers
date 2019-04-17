@@ -19,7 +19,7 @@ class GroupManager extends Model {
 
   public static function searchGroups($words) {
 
-    $searchWords = explode(" ", strtolower($words));
+    $searchWords = explode("-", strtolower($words));
 
     $allGroups = Group::all();
     $inKeywordsGroups = [];
@@ -37,7 +37,13 @@ class GroupManager extends Model {
       }
     }
 
-    return array_unique($inKeywordsGroups);
+    $total = array_unique($inKeywordsGroups);
+    $searchResult = [];
+    foreach($total as $tp) {
+        $searchResult[] = $tp;
+    }
+
+    return $searchResult;
   }
 
   public static function store(Request $request, User $user) {
