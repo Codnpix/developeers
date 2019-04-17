@@ -66,8 +66,9 @@ class PostController extends Controller {
      */
     public function show(Post $post) {
       $postBuild = PostManager::getPost($post);
+      $version = Version::find($postBuild->active_version->id);
       $user = auth()->user();
-      NotificationManager::clearNotifications($user, $post);
+      NotificationManager::clearNotifications($user, $post, $version);
       return $postBuild;
     }
 
@@ -91,7 +92,7 @@ class PostController extends Controller {
     public function showVersion(Post $post, Version $version) {
       $postBuild = PostManager::getPostVersion($post, $version);
       $user = auth()->user();
-      NotificationManager::clearNotifications($user, $post);
+      NotificationManager::clearNotifications($user, $post, $version);
       return $postBuild;
     }
 

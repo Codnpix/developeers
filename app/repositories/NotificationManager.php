@@ -111,7 +111,8 @@ class NotificationManager extends Model {
        $message = $notifying->name .' a créé une nouvelle version pour '. $post->title;
      }
 
-     if (!$message == "") {
+     if (!$message == ""
+     && $notified->id != $notifying->id) {
        $notif = new Notification();
        $notif->notified_user_id = $notified->id;
        $notif->message = $message;
@@ -121,16 +122,19 @@ class NotificationManager extends Model {
          "number"=>$version->number
        );
        $notif->post_id = $post->id;
+       $notif->unread = true;
        $notif->save();
      }
    }
 
-   public static function clearNotifications(User $user, Post $post) {
-     $notifications = Notification::where('notified_user_id', '=', $user->id)
-                                  ->where('post_id', '=', $post->id)
+   public static function clearNotifications(User $user, Post $post, Version $version) {
+     $notifications = Notification::where('notified_user_id', $user->id)
+                                  ->where('post_id', $post->id)
+                                  ->where('version.id', $version->id)
                                   ->get();
      foreach($notifications as $n) {
-       $n->delete();
+       $n->unread = false;
+       $n->save();
      }
    }
 }

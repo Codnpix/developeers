@@ -15,6 +15,7 @@ class Notification extends Eloquent {
       'message',
       'request_route_link',
       'post_id',
+      'unread',
       'created_at',
       'updated_at'
   ];
