@@ -100,7 +100,7 @@ class NotificationManager extends Model {
 
        } else if ($source == 'version') {
 
-         $message = $notifying->name .' a voté pour la version '. $version->number .' que vous avez proposé sur '. $post->title;
+         $message = $notifying->name .' a voté pour la version '. $version->number .' que vous avez proposée sur '. $post->title;
 
        } else if ($source == 'comment') {
 
@@ -156,5 +156,11 @@ class NotificationManager extends Model {
    public static function deleteObsoleteNotification(Notification $notif) {
        $notif->delete();
        return "Notification deleted";
+   }
+
+   public static function markNotificationRead(Notification $notif) {
+       $notif->unread = false;
+       $notif->save();
+       return "Notification has been marked as read";
    }
 }

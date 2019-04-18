@@ -46,6 +46,7 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     //get all user notifications :
     Route::get('/notifications', 'UserController@getNotifications')->name('user.notifications');
     Route::delete('/notifications/{notification}', 'UserController@deleteObsoleteNotification')->name('user.deleteObsoleteNotification');
+    Route::put('/notifications/{notifiation}', 'UserController@markNotificationRead')->name('user.readNotification');
     //POST
     //get all posts wich user is involved on. :
     Route::get('/userposts', 'PostController@showUserPosts')->name('posts.user');
