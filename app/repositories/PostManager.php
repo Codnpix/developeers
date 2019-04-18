@@ -40,6 +40,10 @@ class PostManager extends Model {
 
   public static function getGroupPosts(Group $group) {
     $posts = Post::where('group_id', $group->id)->get();
+    foreach ($posts as &$post) {
+      $versions = VersionManager::getPostVersions($post);
+      $post->versions = $versions;
+    }
     return $posts;
   }
 
@@ -208,6 +212,10 @@ class PostManager extends Model {
   public static function getAuthorPost() {
     $user = auth()->user();
     $posts = Post::where('author_id', $user->id)->get();
+    foreach ($posts as &$post) {
+      $versions = VersionManager::getPostVersions($post);
+      $post->versions = $versions;
+    }
     return $posts;
   }
 
