@@ -183,19 +183,19 @@ class PostManager extends Model {
   public static function getUserPosts(User $user) {
 
     $userVersions = Version::where('author_id', $user->id)->get();
-    $userVersionsPosts = [];
+    $userVersionsPosts = array();
     foreach ($userVersions as $ver) {
         $p = Post::find($ver->post_id);
-        if ($p->author_id != $user->id) {
+        if ($p['author_id'] != $user->id) {
             $userVersionsPosts[] = $p;
         }
     }
     $userComments = Comment::where('author_id', $user->id)->get();
-    $userCommentsPosts = [];
+    $userCommentsPosts = array();
     foreach ($userComments as $com) {
       $v = Version::find($com->version_id);
       $p = Post::find($v->post_id);
-      if ($p->author_id != $user->id) {
+      if ($p['author_id'] != $user->id) {
           $userCommentsPosts[] = $p;
       }
     }
@@ -206,6 +206,7 @@ class PostManager extends Model {
     foreach ($totalUserPosts as $tp) {
       $total[] = $tp;
     }
+
     return $total;
   }
 
