@@ -180,23 +180,50 @@ class PostManager extends Model {
     return $postBuild;
   }
 
+  private static function getExcerpt($text) {
+      if (strlen($text)) {
+          if (strlen($text) < 100) {
+              return $text;
+          } else {
+              return substr($text, 0, 99).' [...]';
+          }
+      }
+  }
+
+  private static function buildPostForList(Post $post) {
+      $postVersions = VersionManager::getPostVersions($post);
+
+      $nbVersions = count($postVersions);
+      $post->number_of_versions = $nbVersions;
+
+      $excerpt = self::getExcerpt($postVersions[0]->text_content);
+      $post->excerpt = $excerpt;
+      return $post;
+  }
+
   public static function getUserPosts(User $user) {
 
     $userVersions = Version::where('author_id', $user->id)->get();
-    $userVersionsPosts = array();
+    $userVersionsPosts = [];
     foreach ($userVersions as $ver) {
+
         $p = Post::find($ver->post_id);
+
         if ($p->author_id != $user->id) {
-            $userVersionsPosts[] = $p;
+            $pBuild = self::buildPostForList($p);
+            $userVersionsPosts[] = $pBuild;
         }
     }
+
     $userComments = Comment::where('author_id', $user->id)->get();
-    $userCommentsPosts = array();
+    $userCommentsPosts = [];
+
     foreach ($userComments as $com) {
       $v = Version::find($com->version_id);
       $p = Post::find($v->post_id);
       if ($p->author_id != $user->id) {
-          $userCommentsPosts[] = $p;
+          $pBuild = self::buildPostForList($p);
+          $userCommentsPosts[] = $pBuild;
       }
     }
     $totalUserPosts = array_unique(array_merge($userVersionsPosts, $userCommentsPosts));
@@ -213,13 +240,14 @@ class PostManager extends Model {
   public static function getAuthorPost() {
     $user = auth()->user();
     $posts = Post::where('author_id', $user->id)->get();
+    $postsBuild = [];
 
     foreach ($posts as &$post) {
-      $versions = VersionManager::getPostVersions($post);
-      $post->versions = $versions;
+      $pBuild = self::buildPostForList($post);
+      $postsBuild[] = $pBuild;
     }
 
-    return $posts;
+    return $postsBuild;
   }
 
   public static function searchPosts($words) {
@@ -236,9 +264,15 @@ class PostManager extends Model {
 
       foreach ($searchWords as $sw) {
         //search in keywords
-        if (in_array($sw, $postKeywords)) $inKeywordsPosts[] = $p;
+        if (in_array($sw, $postKeywords)) {
+            $pBuild = self::buildPostForList($p);
+            $inKeywordsPosts[] = $pBuild;
+        }
         //search in title
-        if (in_array($sw, $titleWords)) $inKeywordsPosts[] = $p;
+        if (in_array($sw, $titleWords)) {
+            $pBuild = self::buildPostForList($p);
+            $inKeywordsPosts[] = $pBuild;
+        }
       }
     }
 
@@ -258,7 +292,8 @@ class PostManager extends Model {
     foreach ($userGroups as $g) {
       $gPosts = Post::where('group_id', $g->id)->get();
       foreach ($gPosts as $p) {
-        $posts[] = $p;
+          $pBuild = self::buildPostForList($p);
+          $posts[] = $pBuild;
       }
     }
     return $posts;
@@ -267,6 +302,10 @@ class PostManager extends Model {
   public static function getGuestFeed() {
       //À AMELIORER !
       $posts = Post::orderBy('created_at', 'desc')->get();
+      foreach ($posts as $p) {
+          $pBuild = self::buildPostForList($p);
+          $posts[] = $pBuild;
+      }
       return $posts;
   }
 
