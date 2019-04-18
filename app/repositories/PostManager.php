@@ -186,7 +186,7 @@ class PostManager extends Model {
     $userVersionsPosts = array();
     foreach ($userVersions as $ver) {
         $p = Post::find($ver->post_id);
-        if ($p['author_id'] != $user->id) {
+        if ($p->author_id != $user->id) {
             $userVersionsPosts[] = $p;
         }
     }
@@ -195,7 +195,7 @@ class PostManager extends Model {
     foreach ($userComments as $com) {
       $v = Version::find($com->version_id);
       $p = Post::find($v->post_id);
-      if ($p['author_id'] != $user->id) {
+      if ($p->author_id != $user->id) {
           $userCommentsPosts[] = $p;
       }
     }
