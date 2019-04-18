@@ -34,7 +34,7 @@ class VersionManager extends Model {
 
     $notifType = "version";
     $notifSource = "post";
-    NotificationManager::broadcastOnPost($post, $versionAuthor, $version, $notifType, $notifSource);
+    NotificationManager::broadcastOnPost($post, $versionAuthor, $version, $notifType, $notifSource, $version->id);
   }
 
   public static function voteVersion(Request $request, Version $version, User $user) {
@@ -69,7 +69,7 @@ class VersionManager extends Model {
       $version->votes = $versionVotes;
       $version->save();
 
-      NotificationManager::notifyVersionAuthor($votingUser, $version, $notifType, $notifSource);
+      NotificationManager::notifyVersionAuthor($votingUser, $version, $notifType, $notifSource, $version->id);
 
       return "Vote added on version successfully!";
 
@@ -81,7 +81,7 @@ class VersionManager extends Model {
         $versionVotes[$key]["vote"] = $vote;
         $version->votes = $versionVotes;
         $version->save();
-        NotificationManager::notifyVersionAuthor($votingUser, $version, $notifType, $notifSource);
+        NotificationManager::notifyVersionAuthor($votingUser, $version, $notifType, $notifSource, $version->id);
 
         return "Vote has been updated successfully !";
       } else return "User already voted";
@@ -124,14 +124,19 @@ class VersionManager extends Model {
   }
 
   public static function destroyVersion(Version $version) {
+
     $snippets = CodeSnippetManager::getVersionSnippets($version);
     $comments = CommentManager::getComments($version);
     foreach($snippets as $snippet) {
-      $snippet->delete();
+        $snippet->delete();
     }
     foreach($comments as $comment) {
-      $comment->delete();
+        NotificationManager::deleteElementRelatedNotifications($comment->id);
+        $comment->delete();
     }
+
+    NotificationManager::deleteElementRelatedNotifications($version->id);
+
     $version->delete();
     return "Version deleted successfully";
   }

@@ -27,7 +27,7 @@ class CommentManager extends Model {
 
     $notifType = "comment";
     $notifSource = "version";
-    NotificationManager::broadcastOnVersion($author, $version, $notifType, $notifSource);
+    NotificationManager::broadcastOnVersion($author, $version, $notifType, $notifSource, $comment->id);
   }
 
   public static function voteComment(Request $request, Comment $comment, User $user) {
@@ -62,7 +62,7 @@ class CommentManager extends Model {
       $comment->votes = $commentVotes;
       $comment->save();
 
-      NotificationManager::notifyCommentAuthor($votingUser, $comment, $notifType, $notifSource);
+      NotificationManager::notifyCommentAuthor($votingUser, $comment, $notifType, $notifSource, $comment->id);
 
       return "Vote added on comment successfully!";
 
@@ -75,7 +75,7 @@ class CommentManager extends Model {
         $comment->votes = $commentVotes;
         $comment->save();
 
-        NotificationManager::notifyCommentAuthor($votingUser, $comment, $notifType, $notifSource);
+        NotificationManager::notifyCommentAuthor($votingUser, $comment, $notifType, $notifSource, $comment->id);
 
         return "Vote has been updated successfully !";
       } else return "User already voted";
@@ -94,6 +94,7 @@ class CommentManager extends Model {
   }
 
   public static function destroyComment(Comment $comment) {
+    NotificationManager::deleteElementRelatedNotifications($comment->id);
     $comment->delete();
     return "Comment deleted successfully";
   }

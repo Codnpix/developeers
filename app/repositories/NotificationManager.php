@@ -18,7 +18,7 @@ class NotificationManager extends Model {
       return $notifications;
     }
 
-    public static function broadcastOnPost(Post $post, User $notifying, Version $version, $type, $source) {
+    public static function broadcastOnPost(Post $post, User $notifying, Version $version, $type, $source, $originElementId) {
       $postUsers = [];
       $postUsers[] = User::find($post->author_id);
 
@@ -35,11 +35,11 @@ class NotificationManager extends Model {
       }
 
       foreach ($postUsers as $u) {
-        self::addNotification($u, $notifying, $post, $version, $type, $source);
+        self::addNotification($u, $notifying, $post, $version, $type, $source, $originElementId);
       }
     }
 
-    public static function broadcastOnVersion(User $notifying, Version $version, $type, $source) {
+    public static function broadcastOnVersion(User $notifying, Version $version, $type, $source, $originElementId) {
       $post = Post::find($version->post_id);
       $usersOnVersion = [];
       $usersOnVersion[] = User::find($version->author_id);
@@ -51,28 +51,28 @@ class NotificationManager extends Model {
       }
 
       foreach ($usersOnVersion as $u) {
-        self::addNotification($u, $notifying, $post, $version, $type, $source);
+        self::addNotification($u, $notifying, $post, $version, $type, $source, $originElementId);
       }
     }
 
-    public static function notifyPostAuthor(Post $post, User $notifying, $type, $source) {
+    public static function notifyPostAuthor(Post $post, User $notifying, $type, $source, $originElementId) {
       $notified = User::find($post->author_id);
       $postVersions = VersionManager::getPostVersions($post);
       $lastVersion = $postVersions[count($postVersions) - 1];
-      self::addNotification($notified, $notifying, $post, $lastVersion, $type, $source);
+      self::addNotification($notified, $notifying, $post, $lastVersion, $type, $source, $originElementId);
     }
 
-    public static function notifyVersionAuthor(User $notifying, Version $version, $type, $source) {
+    public static function notifyVersionAuthor(User $notifying, Version $version, $type, $source, $originElementId) {
       $notified = User::find($version->author_id);
       $post = Post::find($version->post_id);
-      self::addNotification($notified,$notifying,$post,$version,$type,$source);
+      self::addNotification($notified,$notifying,$post,$version,$type,$source, $originElementId);
     }
 
-    public static function notifyCommentAuthor(User $notifying, Comment $comment, $type, $source) {
+    public static function notifyCommentAuthor(User $notifying, Comment $comment, $type, $source, $originElementId) {
       $notified = User::find($comment->author_id);
       $version = Version::find($comment->version_id);
       $post = Post::find($version->post_id);
-      self::addNotification($notified,$notifying,$post,$version,$type,$source);
+      self::addNotification($notified,$notifying,$post,$version,$type,$source, $originElementId);
     }
 
     private static function addNotification(User $notified,
@@ -80,7 +80,8 @@ class NotificationManager extends Model {
                                           Post $post,
                                           Version $version,
                                           $type,
-                                          $source) {
+                                          $source,
+                                          $originElementId) {
 
       //$type : expected String "comment" or "vote " or "version"
       //$source: expected String "comment" or "post" or "version"
@@ -123,6 +124,7 @@ class NotificationManager extends Model {
        );
        $notif->post_id = $post->id;
        $notif->unread = true;
+       $notif->origin_element_id = $originElementId;
        $notif->save();
      }
    }
@@ -136,5 +138,23 @@ class NotificationManager extends Model {
        $n->unread = false;
        $n->save();
      }
+   }
+
+   public static function deleteElementRelatedNotifications($elementId) {
+
+       /*
+       * param $elementID  : Expected mongoDB Object _id String
+       */
+
+       $notifications = Notification::where('origin_element_id', $elementId)->get();
+
+       foreach($notifications as $n) {
+           $n->delete();
+       }
+   }
+
+   public static function deleteObsoleteNotification(Notification $notif) {
+       $notif->delete();
+       return "Notification deleted";
    }
 }

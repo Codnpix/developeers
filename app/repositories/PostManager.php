@@ -105,7 +105,7 @@ class PostManager extends Model {
       $post->votes = $postVotes;
       $post->save();
 
-      NotificationManager::notifyPostAuthor($post, $notifying, $notifType, $notifSource);
+      NotificationManager::notifyPostAuthor($post, $notifying, $notifType, $notifSource, $post->id);
 
       return "Vote added on post successfully!";
 
@@ -115,7 +115,7 @@ class PostManager extends Model {
         $postVotes[$key]["vote"] = $vote;
         $post->votes = $postVotes;
         $post->save();
-        NotificationManager::notifyPostAuthor($post, $notifying, $notifType, $notifSource);
+        NotificationManager::notifyPostAuthor($post, $notifying, $notifType, $notifSource, $post->id);
 
         return "Vote has been updated successfully !";
       } else return "User already voted";
@@ -236,7 +236,7 @@ class PostManager extends Model {
     foreach($total as $tp) {
         $searchResult[] = $tp;
     }
-    
+
     return $searchResult;
   }
 
@@ -290,10 +290,13 @@ class PostManager extends Model {
           $snippet->delete();
         }
         foreach ($comments as $comment) {
-          $comment->delete();
+            NotificationManager::deleteElementRelatedNotifications($comment->id);
+            $comment->delete();
         }
+        NotificationManager::deleteElementRelatedNotifications($version->id);
         $version->delete();
       }
+      NotificationManager::deleteElementRelatedNotifications($post->id);
       $post->delete();
       return "Post deleted successfully";
   }
