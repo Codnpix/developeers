@@ -19,6 +19,7 @@ class Post extends Eloquent {
       'group',
       'keywords',
       'votes',
+      'followers',
       'created_at',
       'updated_at'
     ];

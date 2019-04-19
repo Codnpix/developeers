@@ -82,6 +82,10 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::put('/updateversion/{version}', 'PostController@updateVersion')->name('posts.updateVersion');
     //update a comment
     Route::put('/updatecomment/{comment}', 'PostController@updateComment')->name('posts.updateComment');
+    //follow a post
+    Route::put('/follow/{post}', 'PostController@followPost')->name('post.follow');
+    //unfollow a post
+    Route::put('/unfollow/{post}', 'PostController@unfollowPost')->name('post.unfollow');
 
     //VERSIONS
     //vote for a version (vote = true or false)

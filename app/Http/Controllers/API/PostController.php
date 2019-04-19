@@ -108,11 +108,15 @@ class PostController extends Controller {
     }
 
     public function followPost(Post $post) {
-        //
+        $user = auth()->user();
+        $response = PostManager::followPost($post, $user);
+        return $response;
     }
 
     public function unfollowPost(Post $post) {
-        //
+        $user = auth()->user();
+        $response = PostManager::unfollowPost($post, $user);
+        return $response;
     }
 
     /**

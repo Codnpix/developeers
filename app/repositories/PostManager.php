@@ -61,17 +61,18 @@ class PostManager extends Model {
     $post->group_id = $request->group_id;
     $post->group_name = Group::find($request->group_id)->name;
     $post->group = array(
-      "_id"=> Group::find($request->group_id)->id,
-      "name"=> Group::find($request->group_id)->name,
-      "description"=>Group::find($request->group_id)->description,
-      "keywords"=>Group::find($request->group_id)->keywords,
-      "users_id"=>Group::find($request->group_id)->users_id,
-      "users"=>Group::find($request->group_id)->users
+      "_id" => Group::find($request->group_id)->id,
+      "name" => Group::find($request->group_id)->name,
+      "description" => Group::find($request->group_id)->description,
+      "keywords" => Group::find($request->group_id)->keywords,
+      "users_id" => Group::find($request->group_id)->users_id,
+      "users" => Group::find($request->group_id)->users
     );
     $post->votes = [];
     $post->keywords = $request->keywords;
     $post->author_id = $user->id;
     $post->author_name = $user->name;
+    $post->followers = [];
     $post->save();
 
     VersionManager::createInitPostVersion($request->text_content, $request->code_snippets, $post);
@@ -204,38 +205,49 @@ class PostManager extends Model {
 
   public static function getUserPosts(User $user) {
 
-    $userVersions = Version::where('author_id', $user->id)->get();
-    $userVersionsPosts = [];
-    foreach ($userVersions as $ver) {
+    // $userVersions = Version::where('author_id', $user->id)->get();
+    // $userVersionsPosts = [];
+    // foreach ($userVersions as $ver) {
+    //
+    //     $p = Post::find($ver->post_id);
+    //
+    //     if ($p->author_id != $user->id) {
+    //         $pBuild = self::buildPostForList($p);
+    //         $userVersionsPosts[] = $pBuild;
+    //     }
+    // }
+    //
+    // $userComments = Comment::where('author_id', $user->id)->get();
+    // $userCommentsPosts = [];
+    //
+    // foreach ($userComments as $com) {
+    //   $v = Version::find($com->version_id);
+    //   $p = Post::find($v->post_id);
+    //   if ($p->author_id != $user->id) {
+    //       $pBuild = self::buildPostForList($p);
+    //       $userCommentsPosts[] = $pBuild;
+    //   }
+    // }
+    // $totalUserPosts = array_unique(array_merge($userVersionsPosts, $userCommentsPosts));
+    //
+    // //this need to be done in order to get an iterable array in response.... weird..
+    // $total = [];
+    // foreach ($totalUserPosts as $tp) {
+    //   $total[] = $tp;
+    // }
+    //
+    // return $total;
 
-        $p = Post::find($ver->post_id);
 
-        if ($p->author_id != $user->id) {
-            $pBuild = self::buildPostForList($p);
-            $userVersionsPosts[] = $pBuild;
-        }
+    //NEW METHOD
+    //return posts followed by user :
+    $posts = Post::whereIn('followers', [$user->id])->get();
+    $postsBuild  = [];
+    foreach ($posts as $post) {
+        $pBuild = self::buildPostForList($post);
+        $postsBuild[] = $pBuild;
     }
-
-    $userComments = Comment::where('author_id', $user->id)->get();
-    $userCommentsPosts = [];
-
-    foreach ($userComments as $com) {
-      $v = Version::find($com->version_id);
-      $p = Post::find($v->post_id);
-      if ($p->author_id != $user->id) {
-          $pBuild = self::buildPostForList($p);
-          $userCommentsPosts[] = $pBuild;
-      }
-    }
-    $totalUserPosts = array_unique(array_merge($userVersionsPosts, $userCommentsPosts));
-
-    //this need to be done in order to get an iterable array in response.... weird..
-    $total = [];
-    foreach ($totalUserPosts as $tp) {
-      $total[] = $tp;
-    }
-
-    return $total;
+    return $postsBuild;
   }
 
   public static function getAuthorPost() {
@@ -286,6 +298,29 @@ class PostManager extends Model {
     return $searchResult;
   }
 
+  public static function followPost(Post $post, User $user) {
+      $followers = $post->followers;
+      if(!in_array($user->id, $followers)) {
+          $followers[] = $user->id;
+          $post->followers = $followers;
+          $post->save();
+          $msg = "User is now following the post : ".$post->title;
+          return $msg;
+      } else return "User is already following this post";
+  }
+
+  public static function unfollowPost(Post $post, User $user) {
+      $followers = $post->followers;
+      $key = array_search($user->id, $followers);
+      if ($key >= 0 && $key != false) {
+          array_splice($followers, $key, 1);
+          $post->followers = $followers;
+          $post->save();
+          $msg = "User will be no longer following the post : ".$post->title ;
+          return $msg;
+      } else return "User is not following this post";
+  }
+
   public static function getUserFeed(User $user) {
       //À AMELIORER !
     $posts = [];
@@ -297,17 +332,18 @@ class PostManager extends Model {
           $posts[] = $pBuild;
       }
     }
-    return $posts;
+    return array_unique($posts);
   }
 
   public static function getGuestFeed() {
       //À AMELIORER !
       $posts = Post::orderBy('created_at', 'desc')->get();
+      $postsBuild = [];
       foreach ($posts as $p) {
           $pBuild = self::buildPostForList($p);
-          $posts[] = $pBuild;
+          $postsBuild[] = $pBuild;
       }
-      return $posts;
+      return array_unique($postsBuild);
   }
 
   /**
