@@ -17,6 +17,7 @@ class CreateProfilePicsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('user_id');
             $table->string('image_path');
+            $table->string('local_path');
             $table->timestamps();
         });
     }

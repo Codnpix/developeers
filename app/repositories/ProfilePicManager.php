@@ -6,6 +6,7 @@ use App\Profile_pic;
 use App\repositories\CommentManager;
 use App\repositories\PostManager;
 use App\repositories\VersionManager;
+use Illuminate\Support\Facades\Storage;
 
 use App\Comment;
 use App\Post;
@@ -20,6 +21,7 @@ class ProfilePicManager extends Model {
         $url = 'http://localhost/developeers/storage/app/public/' .$path;
         $pic = new Profile_pic();
         $pic->image_path = $url;
+        $pic->local_path = $path;
         $pic->user_id = $userId;
         $pic->save();
         //update picture pathes on user's comments, versions and posts
@@ -50,6 +52,10 @@ class ProfilePicManager extends Model {
     private static function deletePreviousProfilePics($userId) {
         $pics = Profile_pic::where('user_id', $userId)->get();
         foreach ($pics as $pic) {
+            $file = basename($pic->image_path);
+            //Storage::delete('toto.txt');
+            //Storage::disk('public')->delete('app/public/toto.txt');
+            unlink(storage_path('app/public/'.$pic->local_path));
             $pic->delete();
         }
     }
