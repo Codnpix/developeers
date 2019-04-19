@@ -107,6 +107,14 @@ class PostController extends Controller {
       return $posts;
     }
 
+    public function followPost(Post $post) {
+        //
+    }
+
+    public function unfollowPost(Post $post) {
+        //
+    }
+
     /**
      * Update the specified resource in storage.
      *

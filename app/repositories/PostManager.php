@@ -40,11 +40,12 @@ class PostManager extends Model {
 
   public static function getGroupPosts(Group $group) {
     $posts = Post::where('group_id', $group->id)->get();
+    $postsBuild= [];
     foreach ($posts as &$post) {
-      $versions = VersionManager::getPostVersions($post);
-      $post->versions = $versions;
+      $pBuild = self::buildPostForList($post);
+      $postsBuild[] = $pBuild;
     }
-    return $posts;
+    return $postsBuild;
   }
 
   /**
