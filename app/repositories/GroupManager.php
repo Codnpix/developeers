@@ -12,39 +12,65 @@ use App\User;
 
 class GroupManager extends Model {
 
-  public static function getUserGroups(User $user) {
-    $groups = Group::whereIn('users_id', [$user->id])->get();
-    return $groups;
-  }
-
-  public static function searchGroups($words) {
-
-    $searchWords = explode("-", strtolower($words));
-
-    $allGroups = Group::all();
-    $inKeywordsGroups = [];
-
-    foreach ($allGroups as $g) {
-
-      $groupKeywords = $g->keywords;//check keywords
-      $nameWords = explode(" ", strtolower($g->name));//check title words
-
-      foreach ($searchWords as $sw) {
-        //search in keywords
-        if (in_array($sw, $groupKeywords)) $inKeywordsGroups[] = $g;
-        //search in title
-        if (in_array($sw, $nameWords)) $inKeywordsGroups[] = $g;
-      }
+    public static function getAllGroups() {
+        $groupsBuild = [];
+        $groups = Group::all();
+        $groupsBuild = $groups;
+        foreach ($groupsBuild as $gb) {
+            $postsInGroup = Post::where('group_id', $gb->id)->get();
+            $gb->number_of_posts = count($postsInGroup);
+        }
+        return $groupsBuild;
     }
 
-    $total = array_unique($inKeywordsGroups);
-    $searchResult = [];
-    foreach($total as $tp) {
-        $searchResult[] = $tp;
+    public static function getUserGroups(User $user) {
+        $groupsBuild = [];
+        $groups = Group::whereIn('users_id', [$user->id])->get();
+        $groupsBuild = $groups;
+        foreach ($groupsBuild as $gb) {
+            $postsInGroup = Post::where('group_id', $gb->id)->get();
+            $gb->number_of_posts = count($postsInGroup);
+        }
+        return $groupsBuild;
     }
 
-    return $searchResult;
-  }
+    public static function searchGroups($words) {
+
+        $searchWords = explode("-", strtolower($words));
+
+        $allGroups = Group::all();
+        $inKeywordsGroups = [];
+
+        foreach ($allGroups as $g) {
+
+          $groupKeywords = $g->keywords;//check keywords
+          $nameWords = explode(" ", strtolower($g->name));//check title words
+
+          foreach ($searchWords as $sw) {
+            //search in keywords
+            if (in_array($sw, $groupKeywords)) $inKeywordsGroups[] = $g;
+            //search in title
+            if (in_array($sw, $nameWords)) $inKeywordsGroups[] = $g;
+          }
+        }
+
+        $total = array_unique($inKeywordsGroups);
+
+        $groupsBuild = $total;
+
+        foreach ($groupsBuild as $gb) {
+            $postsInGroup = Post::where('group_id', $gb->id)->get();
+            $gb->number_of_posts = count($postsInGroup);
+        }
+
+
+        $searchResult = [];
+        foreach($groupsBuild as $gbr) {
+            $searchResult[] = $gbr;
+        }
+
+        return $searchResult;
+    }
 
   public static function store(Request $request, User $user) {
 

@@ -17,7 +17,8 @@ class GroupController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function index() {
-        return Group::all();
+        $groups = GroupManager::getAllGroups();
+        return $groups;
     }
 
     /**
