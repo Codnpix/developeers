@@ -72,6 +72,7 @@ class PostManager extends Model {
     $post->keywords = $request->keywords;
     $post->author_id = $user->id;
     $post->author_name = $user->name;
+    //$post->followers = [$user->id];
     $post->followers = [];
     $post->save();
 
@@ -312,7 +313,7 @@ class PostManager extends Model {
   public static function unfollowPost(Post $post, User $user) {
       $followers = $post->followers;
       $key = array_search($user->id, $followers);
-      if ($key >= 0 && $key != false) {
+      if (gettype($key) == 'integer') {
           array_splice($followers, $key, 1);
           $post->followers = $followers;
           $post->save();
