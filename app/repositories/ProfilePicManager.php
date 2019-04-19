@@ -27,14 +27,14 @@ class ProfilePicManager extends Model {
         foreach ($userComments as $c) {
             CommentManager::updateAuthorProfilePicUrl($c, $url);
         }
-        // $userVersions = Version::where('author_id', $userId)->get();
-        // foreach ($userVersions as $v) {
-        //     VersionManager::updateAuthorProfilePicUrl($v, $url);
-        // }
-        // $userPosts = Post::where('author_id', $userId)->get();
-        // foreach ($userPosts as $c) {
-        //     PostManager::updateAuthorProfilePicUrl($c, $url);
-        // }
+        $userVersions = Version::where('author_id', $userId)->get();
+        foreach ($userVersions as $v) {
+            VersionManager::updateAuthorProfilePicUrl($v, $url);
+        }
+        $userPosts = Post::where('author_id', $userId)->get();
+        foreach ($userPosts as $c) {
+            PostManager::updateAuthorProfilePicUrl($c, $url);
+        }
         return "Image stored successfully !";
     }
 

@@ -218,42 +218,6 @@ class PostManager extends Model {
 
   public static function getUserPosts(User $user) {
 
-    // $userVersions = Version::where('author_id', $user->id)->get();
-    // $userVersionsPosts = [];
-    // foreach ($userVersions as $ver) {
-    //
-    //     $p = Post::find($ver->post_id);
-    //
-    //     if ($p->author_id != $user->id) {
-    //         $pBuild = self::buildPostForList($p);
-    //         $userVersionsPosts[] = $pBuild;
-    //     }
-    // }
-    //
-    // $userComments = Comment::where('author_id', $user->id)->get();
-    // $userCommentsPosts = [];
-    //
-    // foreach ($userComments as $com) {
-    //   $v = Version::find($com->version_id);
-    //   $p = Post::find($v->post_id);
-    //   if ($p->author_id != $user->id) {
-    //       $pBuild = self::buildPostForList($p);
-    //       $userCommentsPosts[] = $pBuild;
-    //   }
-    // }
-    // $totalUserPosts = array_unique(array_merge($userVersionsPosts, $userCommentsPosts));
-    //
-    // //this need to be done in order to get an iterable array in response.... weird..
-    // $total = [];
-    // foreach ($totalUserPosts as $tp) {
-    //   $total[] = $tp;
-    // }
-    //
-    // return $total;
-
-
-    //NEW METHOD
-    //return posts followed by user :
     $posts = Post::whereIn('followers', [$user->id])->get();
     $postsBuild  = [];
     foreach ($posts as $post) {
