@@ -13,6 +13,7 @@ class Comment extends Eloquent
     protected $fillable = [
         'author_id',
         'author_name',
+        'author_profile_pic_url',
         'content',
         'version_id',
         'votes',

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Post;
 use App\repositories\VersionManager;
 use App\repositories\NotificationManager;
+use App\repositories\ProfilePicManager;
 
 use App\Version;
 use App\Comment;
@@ -20,6 +21,9 @@ class CommentManager extends Model {
     $comment = new Comment();
     $comment->author_id = $author->id;
     $comment->author_name = $author->name;
+    $picUrl = ProfilePicManager::getUserProfilePic($user->id);
+    if ($picUrl == "false") $picUrl = 'http://localhost/developeers/public/blank_profile_pic.png';
+    $comment->author_profile_pic_url = $picUrl;
     $comment->content = $request->content;
     $comment->version_id = $version->id;
     $comment->votes = [];
@@ -28,6 +32,12 @@ class CommentManager extends Model {
     $notifType = "comment";
     $notifSource = "version";
     NotificationManager::broadcastOnVersion($author, $version, $notifType, $notifSource, $comment->id);
+  }
+
+  public static function updateAuthorProfilePicUrl(Comment $comment, $url) {
+      $comment->author_profile_pic_url = $url;
+      $comment->save();
+      return "Author profile picture updated successfully.";
   }
 
   public static function voteComment(Request $request, Comment $comment, User $user) {

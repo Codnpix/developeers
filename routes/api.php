@@ -44,6 +44,7 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::put('user/update', 'PassportController@updateUser')->name('user.update');
     Route::post('user/uploadpic', 'UserController@uploadProfilePic')->name('user.uploadPic');
     Route::get('user/profilepic', 'UserController@getProfilePic')->name('user.getProfilePic');
+    Route::get('user/profilepic/{user}', 'UserController@getAnUserProfilePic')->name('user.getUserProfilePic');
     //NOTIFICATIONS
     //get all user notifications :
     Route::get('/notifications', 'UserController@getNotifications')->name('user.notifications');

@@ -14,6 +14,7 @@ class Post extends Eloquent {
       'title',
       'author_id',
       'author_name',
+      'author_profile_pic_url',
       'group_id',
       'group_name',
       'group',

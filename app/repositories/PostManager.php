@@ -9,6 +9,7 @@ use App\repositories\VersionManager;
 use App\repositories\CodeSnippetManager;
 use App\repositories\CommentManager;
 use App\repositories\NotificationManager;
+use App\repositories\ProfilePicManager;
 
 use App\Version;
 use App\CodeSnippet;
@@ -16,6 +17,7 @@ use App\User;
 use App\Group;
 use App\Post;
 use App\Comment;
+
 
 class PostManager extends Model {
   /**
@@ -72,13 +74,23 @@ class PostManager extends Model {
     $post->keywords = $request->keywords;
     $post->author_id = $user->id;
     $post->author_name = $user->name;
-    //$post->followers = [$user->id];
-    $post->followers = [];
+
+    $picUrl = ProfilePicManager::getUserProfilePic($user->id);
+    if ($picUrl == "false") $picUrl = 'http://localhost/developeers/public/blank_profile_pic.png';
+    $post->author_profile_pic_url = $picUrl;
+
+    $post->followers = [$user->id];//author automatically follows his own post
     $post->save();
 
     VersionManager::createInitPostVersion($request->text_content, $request->code_snippets, $post);
 
     return $post;
+  }
+
+  public static function updateAuthorProfilePicUrl(Post $post, $url) {
+      $post->author_profile_pic_url = $url;
+      $post->save();
+      return "Author profile picture updated successfully.";
   }
 
   public static function votePost(Request $request, Post $post, User $user) {

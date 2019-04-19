@@ -5,13 +5,15 @@ namespace App\repositories;
 use Illuminate\Database\Eloquent\Model;
 use App\repositories\CodeSnippetManager;
 use App\repositories\CommentManager;
+use App\repositories\NotificationManager;
+use App\repositories\ProfilePicManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Version;
 use App\Post;
 use App\CodeSnippet;
 use App\User;
-use App\repositories\NotificationManager;
+
 
 class VersionManager extends Model {
 
@@ -20,6 +22,11 @@ class VersionManager extends Model {
     $version = new Version();
     $version->author_id = $versionAuthor->id;
     $version->author_name = $versionAuthor->name;
+
+    $picUrl = ProfilePicManager::getUserProfilePic($user->id);
+    if ($picUrl == "false") $picUrl = 'http://localhost/developeers/public/blank_profile_pic.png';
+    $version->author_profile_pic_url = $picUrl;
+
     $version->post_id = $post->id;
     $version->text_content = $request->text_content;
     $version->number = $request->number;
@@ -35,6 +42,12 @@ class VersionManager extends Model {
     $notifType = "version";
     $notifSource = "post";
     NotificationManager::broadcastOnPost($post, $versionAuthor, $version, $notifType, $notifSource, $version->id);
+  }
+
+  public static function updateAuthorProfilePicUrl(Version $version, $url) {
+      $version->author_profile_pic_url = $url;
+      $version->save();
+      return "Author profile picture updated successfully.";
   }
 
   public static function voteVersion(Request $request, Version $version, User $user) {
@@ -95,6 +108,11 @@ class VersionManager extends Model {
     $version->number = '1.0';
     $version->author_id = $post->author_id;
     $version->author_name = $authorName;
+
+    $picUrl = ProfilePicManager::getUserProfilePic($post->author_id);
+    if ($picUrl == "false") $picUrl = 'http://localhost/developeers/public/blank_profile_pic.png';
+    $version->author_profile_pic_url = $picUrl;
+
     $version->post_id = $post->id;
     $version->text_content = $textContent;
     $version->votes = [];

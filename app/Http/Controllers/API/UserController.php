@@ -50,4 +50,9 @@ class UserController extends Controller {
         $response = ProfilePicManager::getUserProfilePic($user->id);
         return $response;
     }
+
+    public function getAnUserProfilePic(User $user) {
+        $response = ProfilePicManager::getUserProfilePic($user->id);
+        return $response;
+    }
 }
