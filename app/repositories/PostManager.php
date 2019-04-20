@@ -310,6 +310,20 @@ class PostManager extends Model {
       }
     }
     return array_unique($posts);
+
+    /*-------------------------------------
+    * postsFeed (auth user) :
+    * -analyser les mots clés des groupes suivis par l'utilisateur
+    * -(si groupes)selectionner tous les posts recoupés avec ces mots clés
+    * -(sinon)selectionner tous les posts
+    * -les trier par ordre descendant de date
+    * -extraire dans un tableau à part les posts publiés il y a moins de 3 jours
+    * -tronquer le premier résultat à 30 posts
+    * -tronquer le deuxième résultat à 5 posts
+    * -concaténer les deux tableaux avec les 5 en premierss
+    * -renvoyer le résultat
+    *-------------------------------------*/
+
   }
 
   public static function getGuestFeed() {
@@ -321,6 +335,17 @@ class PostManager extends Model {
           $postsBuild[] = $pBuild;
       }
       return array_unique($postsBuild);
+
+      /*-------------------------------------
+      * GuestFeed (guest user):
+      * -selectionner tous les posts
+      * -les trier par date descendante
+      * -extraire les posts publiés il y a moins de 3 jours dans un tableau à part
+      * -tronquer le premier tableau à {30?} posts et les classer par nb de votes positifs
+      * -tronquer le deuxième tableau à {5?} posts
+      * -concaténer les deux tableaux en mettant les {5?} posts récents en premier
+      * -renvoyer le résultat
+      *-------------------------------------*/
   }
 
   /**
