@@ -42,6 +42,7 @@ class PostManager extends Model {
       }
       $post->versions = $versions;
     }
+    usort($posts, array('App\Repositories\PostManager', 'sortByDate'));
     return $posts;
   }
 
@@ -52,6 +53,7 @@ class PostManager extends Model {
       $pBuild = self::buildPostForList($post);
       $postsBuild[] = $pBuild;
     }
+    usort($postsBuild, array('App\Repositories\PostManager', 'sortByDate'));
     return $postsBuild;
   }
 
@@ -210,17 +212,6 @@ class PostManager extends Model {
       }
   }
 
-  private static function buildPostForList(Post $post) {
-      $postVersions = VersionManager::getPostVersions($post);
-
-      $nbVersions = count($postVersions);
-      $post->number_of_versions = $nbVersions;
-
-      $excerpt = self::getExcerpt($postVersions[0]->text_content);
-      $post->excerpt = $excerpt;
-      return $post;
-  }
-
   public static function getUserPosts(User $user) {
 
     $posts = Post::whereIn('followers', [$user->id])->get();
@@ -229,6 +220,7 @@ class PostManager extends Model {
         $pBuild = self::buildPostForList($post);
         $postsBuild[] = $pBuild;
     }
+    usort($postsBuild, array('App\Repositories\PostManager', 'sortByDate'));
     return $postsBuild;
   }
 
@@ -241,7 +233,7 @@ class PostManager extends Model {
       $pBuild = self::buildPostForList($post);
       $postsBuild[] = $pBuild;
     }
-
+    usort($postsBuild, array('App\Repositories\PostManager', 'sortByDate'));
     return $postsBuild;
   }
 
@@ -276,6 +268,8 @@ class PostManager extends Model {
     foreach($total as $tp) {
         $searchResult[] = $tp;
     }
+
+    usort($searchResult, array('App\Repositories\PostManager', 'sortByDate'));
 
     return $searchResult;
   }
@@ -339,13 +333,13 @@ class PostManager extends Model {
         }
         $postsMainList = $postsCrossWords;
     } else {
-        $allPosts = Post::orderBy('created_at', 'asc')->get();
+        $allPosts = Post::all();
         foreach ($allPosts as $p) {
             $postsMainList[] = $p;
         }
     }
 
-    $postsMainList = array_reverse(array_unique($postsMainList));//sorted by desc timestamp
+    $postsMainList = array_unique($postsMainList);
 
     $today = Carbon::now();
     $lastMonth = $today->subMonths(1);
@@ -360,6 +354,8 @@ class PostManager extends Model {
             array_splice($postsMainList, $key, 1);
         }
     }
+    usort($postsMainList, array('App\Repositories\PostManager', 'sortByDate'));
+    usort($thisMonthPosts, array('App\Repositories\PostManager', 'sortByDate'));
 
     $postsMainList = (count($postsMainList) > self::MAIN_POSTS_FEED_LIMIT) ? array_slice($postsMainList, 0, self::MAIN_POSTS_FEED_LIMIT) : $postsMainList;
     $thisMonthPosts = (count($thisMonthPosts) > self::RECENT_POSTS_FEED_LIMIT) ? array_slice($thisMonthPosts, 0, self::RECENT_POSTS_FEED_LIMIT) : $thisMonthPosts;
@@ -382,7 +378,7 @@ class PostManager extends Model {
       * -concaténer les deux tableaux  avec celui des 5 plus récents en premier
       *-------------------------------------*/
 
-      $allPosts = Post::orderBy('created_at', 'desc')->get();
+      $allPosts = Post::all();
       //pass it to a real array
       $postsMainList  =[];
       foreach ($allPosts as $post) {
@@ -403,6 +399,9 @@ class PostManager extends Model {
               array_splice($postsMainList, $key, 1);
           }
       }
+
+      usort($postsMainList, array('App\Repositories\PostManager', 'sortByDate'));
+      usort($thisMonthPosts, array('App\Repositories\PostManager', 'sortByDate'));
 
       $postsMainList = (count($postsMainList) > self::MAIN_POSTS_FEED_LIMIT) ? array_slice($postsMainList, 0, self::MAIN_POSTS_FEED_LIMIT) : $postsMainList;
       $thisMonthPosts = (count($thisMonthPosts) > self::RECENT_POSTS_FEED_LIMIT) ? array_slice($thisMonthPosts, 0, self::RECENT_POSTS_FEED_LIMIT) : $thisMonthPosts;
@@ -452,5 +451,23 @@ class PostManager extends Model {
       NotificationManager::deleteElementRelatedNotifications($post->id);
       $post->delete();
       return "Post deleted successfully";
+  }
+
+  private static function buildPostForList(Post $post) {
+      $postVersions = VersionManager::getPostVersions($post);
+
+      $nbVersions = count($postVersions);
+      $post->number_of_versions = $nbVersions;
+
+      $excerpt = self::getExcerpt($postVersions[0]->text_content);
+      $post->excerpt = $excerpt;
+      return $post;
+  }
+
+  private static function sortByDate($a, $b) {
+      if ($a['created_at'] == $b['created_at']) {
+          return 0;
+      }
+      return ($a['created_at'] < $b['created_at']) ? 1 : -1;
   }
 }
