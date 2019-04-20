@@ -18,6 +18,8 @@ use App\Group;
 use App\Post;
 use App\Comment;
 
+use Carbon\Carbon;
+
 
 class PostManager extends Model {
   /**
@@ -299,31 +301,73 @@ class PostManager extends Model {
   }
 
   public static function getUserFeed(User $user) {
-      //À AMELIORER !
-    $posts = [];
-    $userGroups = Group::whereIn('users_id', [$user->id])->get();
-    foreach ($userGroups as $g) {
-      $gPosts = Post::where('group_id', $g->id)->get();
-      foreach ($gPosts as $p) {
-          $pBuild = self::buildPostForList($p);
-          $posts[] = $pBuild;
-      }
-    }
-    return array_unique($posts);
 
     /*-------------------------------------
+    * ALGO - PSEUDO CODE
     * postsFeed (auth user) :
-    * -analyser les mots clés des groupes suivis par l'utilisateur
-    * -(si groupes)selectionner tous les posts recoupés avec ces mots clés
-    * -(sinon)selectionner tous les posts
-    * -les trier par ordre descendant de date
-    * -extraire dans un tableau à part les posts publiés il y a moins de 3 jours
-    * -tronquer le premier résultat à 30 posts
-    * -tronquer le deuxième résultat à 5 posts
-    * -concaténer les deux tableaux avec les 5 en premierss
+    * -analyser les mots clés des groupes suivis par l'utilisateur - done
+    * -(si groupes)selectionner tous les posts recoupés avec ces mots clés - done
+    * -(sinon)selectionner tous les posts - done
+    * -les trier par ordre descendant de date - done
+    * -extraire dans un tableau à part les posts publiés il y a moins de 3 jours - done !
+    * -tronquer le premier résultat à 30 posts - done
+    * -tronquer le deuxième résultat à 5 posts - done
+    * -concaténer les deux tableaux avec les 5 en premier
     * -renvoyer le résultat
     *-------------------------------------*/
 
+    $RECENT_POSTS_LIMIT = 5;
+    $MAIN_FEED_POSTS_LIMIT = 30;
+
+    $userGroups = Group::whereIn('users_id', [$user->id])->get();
+    $userKeywords = [];
+    foreach ($userGroups as $group) {
+        $gKeywords = $group->keywords;
+        foreach ($gKeywords as $word) {
+            $userKeywords[] = $word;
+        }
+    }
+
+    $postsMainList;
+
+    if ($userGroups->count() > 0) {
+        $postsCrossWords = [];
+        foreach($userKeywords as $uWord) {
+            $postsHaveWord = Post::whereIn('keywords', [$uWord])->get();
+            foreach($postsHaveWord as $post) {
+                $postsCrossWords[] = $post;
+            }
+        }
+        $postsMainList = $postsCrossWords;
+    } else {
+        $allPosts = Post::orderBy('created_at', 'asc')->get();
+        foreach ($allPosts as $p) {
+            $postsMainList[] = $p;
+        }
+    }
+
+    $postsMainList = array_reverse(array_unique($postsMainList));//sorted by desc timestamp
+
+    $today = Carbon::now();
+    $lastMonth = $today->subMonths(1);
+
+    $thisMonthPosts = [];
+    $cpPostsMainList = $postsMainList;
+    foreach ($cpPostsMainList as $post) {
+        $key = array_search($post, $postsMainList);
+        $postCreatedAt = Carbon::parse($post->created_at);
+        if ( $postCreatedAt->greaterThan($lastMonth) ) {
+            $thisMonthPosts[] = $post;
+            array_splice($postsMainList, $key, 1);
+        }
+    }
+
+    $postsMainList = (count($postsMainList) > $MAIN_FEED_POSTS_LIMIT) ? array_slice($postsMainList, 0, $MAIN_FEED_POSTS_LIMIT) : $postsMainList;
+    $thisMonthPosts = (count($thisMonthPosts) > $RECENT_POSTS_LIMIT) ? array_slice($thisMonthPosts, 0, $RECENT_POSTS_LIMIT) : $thisMonthPosts;
+
+    $result = array_merge($thisMonthPosts, $postsMainList);
+
+    return $result;
   }
 
   public static function getGuestFeed() {
