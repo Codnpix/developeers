@@ -53,8 +53,6 @@ class ProfilePicManager extends Model {
         $pics = Profile_pic::where('user_id', $userId)->get();
         foreach ($pics as $pic) {
             $file = basename($pic->image_path);
-            //Storage::delete('toto.txt');
-            //Storage::disk('public')->delete('app/public/toto.txt');
             unlink(storage_path('app/public/'.$pic->local_path));
             $pic->delete();
         }
