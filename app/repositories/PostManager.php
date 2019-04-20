@@ -248,6 +248,7 @@ class PostManager extends Model {
 
       $postKeywords = $p->keywords;//check keywords
       $titleWords = explode(" ", strtolower($p->title));//check title words
+      $postAuthorName = explode(" ", strtolower($p->author_name));//check in author's name
 
       foreach ($searchWords as $sw) {
         //search in keywords
@@ -257,6 +258,11 @@ class PostManager extends Model {
         }
         //search in title
         if (in_array($sw, $titleWords)) {
+            $pBuild = self::buildPostForList($p);
+            $inKeywordsPosts[] = $pBuild;
+        }
+        //search in author's name
+        if (in_array($sw, $postAuthorName)) {
             $pBuild = self::buildPostForList($p);
             $inKeywordsPosts[] = $pBuild;
         }
