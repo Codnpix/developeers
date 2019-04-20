@@ -22,6 +22,9 @@ use Carbon\Carbon;
 
 
 class PostManager extends Model {
+
+    private  const RECENT_POSTS_FEED_LIMIT = 5;
+    private  const MAIN_POSTS_FEED_LIMIT = 30;
   /**
    * Display a listing of the resource.
    *
@@ -305,19 +308,15 @@ class PostManager extends Model {
     /*-------------------------------------
     * ALGO - PSEUDO CODE
     * postsFeed (auth user) :
-    * -analyser les mots clés des groupes suivis par l'utilisateur - done
-    * -(si groupes)selectionner tous les posts recoupés avec ces mots clés - done
-    * -(sinon)selectionner tous les posts - done
-    * -les trier par ordre descendant de date - done
-    * -extraire dans un tableau à part les posts publiés il y a moins de 3 jours - done !
-    * -tronquer le premier résultat à 30 posts - done
-    * -tronquer le deuxième résultat à 5 posts - done
-    * -concaténer les deux tableaux avec les 5 en premier
-    * -renvoyer le résultat
+    * -analyser les mots clés des groupes suivis par l'utilisateur
+    * -(si groupes)selectionner tous les posts recoupés avec ces mots clés
+    * -(sinon)selectionner tous les posts
+    * -les trier par ordre descendant de date
+    * -extraire dans un tableau à part les posts publiés il y a moins de 3 jours
+    * -tronquer le premier résultat à 30 posts
+    * -tronquer le deuxième résultat à 5 posts
+    * -concaténer les deux tableaux avec celui des 5 plus récents en premier
     *-------------------------------------*/
-
-    $RECENT_POSTS_LIMIT = 5;
-    $MAIN_FEED_POSTS_LIMIT = 30;
 
     $userGroups = Group::whereIn('users_id', [$user->id])->get();
     $userKeywords = [];
@@ -362,8 +361,8 @@ class PostManager extends Model {
         }
     }
 
-    $postsMainList = (count($postsMainList) > $MAIN_FEED_POSTS_LIMIT) ? array_slice($postsMainList, 0, $MAIN_FEED_POSTS_LIMIT) : $postsMainList;
-    $thisMonthPosts = (count($thisMonthPosts) > $RECENT_POSTS_LIMIT) ? array_slice($thisMonthPosts, 0, $RECENT_POSTS_LIMIT) : $thisMonthPosts;
+    $postsMainList = (count($postsMainList) > self::MAIN_POSTS_FEED_LIMIT) ? array_slice($postsMainList, 0, self::MAIN_POSTS_FEED_LIMIT) : $postsMainList;
+    $thisMonthPosts = (count($thisMonthPosts) > self::RECENT_POSTS_FEED_LIMIT) ? array_slice($thisMonthPosts, 0, self::RECENT_POSTS_FEED_LIMIT) : $thisMonthPosts;
 
     $result = array_merge($thisMonthPosts, $postsMainList);
 
@@ -371,25 +370,46 @@ class PostManager extends Model {
   }
 
   public static function getGuestFeed() {
-      //À AMELIORER !
-      $posts = Post::orderBy('created_at', 'desc')->get();
-      $postsBuild = [];
-      foreach ($posts as $p) {
-          $pBuild = self::buildPostForList($p);
-          $postsBuild[] = $pBuild;
-      }
-      return array_unique($postsBuild);
 
       /*-------------------------------------
+      * ALGO - PSEUDO CODE
       * GuestFeed (guest user):
       * -selectionner tous les posts
       * -les trier par date descendante
       * -extraire les posts publiés il y a moins de 3 jours dans un tableau à part
       * -tronquer le premier tableau à {30?} posts et les classer par nb de votes positifs
       * -tronquer le deuxième tableau à {5?} posts
-      * -concaténer les deux tableaux en mettant les {5?} posts récents en premier
-      * -renvoyer le résultat
+      * -concaténer les deux tableaux  avec celui des 5 plus récents en premier
       *-------------------------------------*/
+
+      $allPosts = Post::orderBy('created_at', 'desc')->get();
+      //pass it to a real array
+      $postsMainList  =[];
+      foreach ($allPosts as $post) {
+          $postsMainList[] = $post;
+      }
+
+
+      $today = Carbon::now();
+      $lastMonth = $today->subMonths(1);
+
+      $thisMonthPosts = [];
+      $cpPostsMainList = $postsMainList;
+      foreach ($cpPostsMainList as $post) {
+          $key = array_search($post, $postsMainList);
+          $postCreatedAt = Carbon::parse($post->created_at);
+          if ( $postCreatedAt->greaterThan($lastMonth) ) {
+              $thisMonthPosts[] = $post;
+              array_splice($postsMainList, $key, 1);
+          }
+      }
+
+      $postsMainList = (count($postsMainList) > self::MAIN_POSTS_FEED_LIMIT) ? array_slice($postsMainList, 0, self::MAIN_POSTS_FEED_LIMIT) : $postsMainList;
+      $thisMonthPosts = (count($thisMonthPosts) > self::RECENT_POSTS_FEED_LIMIT) ? array_slice($thisMonthPosts, 0, self::RECENT_POSTS_FEED_LIMIT) : $thisMonthPosts;
+
+      $result = array_merge($thisMonthPosts, $postsMainList);
+
+      return $result;
   }
 
   /**
