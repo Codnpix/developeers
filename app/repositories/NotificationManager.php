@@ -15,7 +15,18 @@ class NotificationManager extends Model {
 
     public static function getNotifications(User $user) {
       $notifications = Notification::where('notified_user_id', $user->id)->get();
-      return $notifications;
+
+      $oldNotifs = [];
+      $unreadNotifs = [];
+
+      foreach ($notifications as $notif) {
+          if ($notif->unread) $unreadNotifs[] = $notif;
+          else $oldNotifs[] = $notif;
+      }
+
+      $oldNotifs = (count($oldNotifs) > 50) ? array_slice($oldNotifs, 0, 50) : $oldNotifs;
+      $result = array_merge(array_reverse($unreadNotifs), array_reverse($oldNotifs));
+      return $result;
     }
 
     public static function broadcastOnPost(Post $post, User $notifying, Version $version, $type, $source, $originElementId) {
