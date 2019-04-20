@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\repositories\UserDataManager;
 
 class PassportController extends Controller
 {
@@ -30,7 +31,15 @@ class PassportController extends Controller
 
         $token = $user->createToken('Developeers')->accessToken;
 
+        self::storeInitUserData($user);
+
         return response()->json(['token' => $token], 200);
+    }
+
+    private static function storeInitUserData(User $user) {
+        //called by Passport::registerUser
+        $response = UserDataManager::storeInitUserData($user);
+        return $response;
     }
 
     /**

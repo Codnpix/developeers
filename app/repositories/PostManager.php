@@ -23,7 +23,7 @@ use Carbon\Carbon;
 
 class PostManager extends Model {
 
-    private  const RECENT_POSTS_FEED_LIMIT = 5;
+    private  const RECENT_POSTS_FEED_LIMIT = 30;
     private  const MAIN_POSTS_FEED_LIMIT = 30;
   /**
    * Display a listing of the resource.
@@ -367,7 +367,6 @@ class PostManager extends Model {
     $thisMonthPosts = (count($thisMonthPosts) > self::RECENT_POSTS_FEED_LIMIT) ? array_slice($thisMonthPosts, 0, self::RECENT_POSTS_FEED_LIMIT) : $thisMonthPosts;
 
     $result = array_merge($thisMonthPosts, $postsMainList);
-
     return $result;
   }
 

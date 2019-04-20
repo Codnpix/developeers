@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use App\User;
 use App\Notification;
 use App\repositories\NotificationManager;
 use App\Http\Requests\Profile_pic_request as PicRequest;
 use App\repositories\ProfilePicManager;
-use Illuminate\Support\Facades\Storage;
+use App\repositories\UserDataManager;
+
 
 class UserController extends Controller {
 
@@ -53,6 +55,40 @@ class UserController extends Controller {
 
     public function getAnUserProfilePic(User $user) {
         $response = ProfilePicManager::getUserProfilePic($user->id);
+        return $response;
+    }
+
+    public function getUserData() {
+        //Route::get('/userdata',' UserController@getUserData')->name('user.userdata');
+        $user = auth()->user();
+        $response = UserDataManager::getUserData($user);
+        return $response;
+    }
+
+    public function getAnUserData(User $user) {
+        //Route::get('/userdata/{user}', 'UserController@getUserData')->name('user.anuserdata');
+        $response = UserDataManager::getUserData($user);
+        return $response;
+    }
+
+    public static function updateUserData(Request $req) {
+        //Route::put('/userdata', 'UserController@updateUserData')->name('user.updateData');
+        $user = auth()->user();
+        $response = UserDataManager::updateUserData($req, $user);
+        return $response;
+    }
+
+    public static function followUser(User $user) {
+        //Route::put('/followuser/{user}', 'UserController@followUser')->name('user.followuser');
+        $follower = auth()->user();
+        $response = UserDataManager::followUser($follower, $user);
+        return $response;
+    }
+
+    public static function unfollowUser(User $user) {
+        //Route::put('/unfollowuser/{user}', 'UserController@unfollowUser')->name('user.unfollowuser');
+        $unfollower = auth()->user();
+        $response = UserDataManager::unfollowUser($unfollower, $user);
         return $response;
     }
 }
