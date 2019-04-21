@@ -331,7 +331,7 @@ class PostManager extends Model {
 
     //add posts whose author is followed by user
     $followedUsers = UserDataManager::getUsersFollowedBy($user);
-    if (count($followedUsers) > 0) {
+    if (count($followedUsers) > 1) {
         foreach ($followedUsers as $fu) {
             $u = User::find($fu['id']);
             $uPosts = Post::where('author_id', $u->id)->get();
@@ -342,7 +342,7 @@ class PostManager extends Model {
     }
 
     //if no groups and no users are followed by user, add all posts
-    if ($userGroups->count() == 0 && $followedUsers->count() == 0) {
+    if ($userGroups->count() == 0 && count($followedUsers) <= 1) {
         $allPosts = Post::all();
         foreach ($allPosts as $p) {
             $postsMainList[] = $p;

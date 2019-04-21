@@ -28,8 +28,14 @@ class UserDataManager extends Model {
         $udata->user_id = $user->id;
         $udata->user_name = $user->name;
         $udata->user_links = [];
-        $udata->followers = [];
-        $udata->following = [];
+        $udata->followers = [array(
+            'id'=> 0,
+            'name'=>'bug fixing example'
+        )];
+        $udata->following = [array(
+            'id'=> 0,
+            'name'=>'bug fixing example'
+        )];
         $udata->user_presentation = '';
         $udata->user_interests = [];
         $udata->save();
@@ -44,8 +50,14 @@ class UserDataManager extends Model {
             $udata = new UserData();
             $udata->user_id = $user->id;
             $udata->user_name = $user->name;
-            $udata->followers = [];
-            $udata->following = [];
+            $udata->followers = [array(
+                'id'=> 0,
+                'name'=>'bug fixing example'
+            )];
+            $udata->following = [array(
+                'id'=> 0,
+                'name'=>'bug fixing example'
+            )];
         }
 
         $udata->user_links = $req->user_links;
