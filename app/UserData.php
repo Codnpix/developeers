@@ -15,6 +15,7 @@ class UserData extends Model {
         'user_name',
         'user_links',
         'followers',
+        'following',
         'user_presentation',
         'user_interests',
         'created_at',

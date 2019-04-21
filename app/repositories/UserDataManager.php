@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\User;
 use App\UserData;
-use App\repositories\ProfilePicManager;
 
 class UserDataManager extends Model {
 
@@ -23,10 +22,9 @@ class UserDataManager extends Model {
         $udata = new UserData();
         $udata->user_id = $user->id;
         $udata->user_name = $user->name;
-        $pic = ProfilePicManager::getUserProfilePic($user->id);
-        $udata->profile_pic_url = $pic->url;
         $udata->user_links = [];
         $udata->followers = [];
+        $udata->following = [];
         $udata->user_presentation = '';
         $udata->user_interests = [];
         $udata->save();
@@ -59,17 +57,19 @@ class UserDataManager extends Model {
                             'name' => $follower->name
                             ), $flws);
         if ($key) {
-            return "You are already following ".$user->name."'s publications'";
-
+            return "You are already following that user";
         } else {
             $flws[] = array(
                         'id' => $follower->id,
                         'name' => $follower->name
                     );
             $udata->followers = $flws;
+
+            //update la propriété following du UserData de $user
+
             $udata->save();
         }
-        return "You are now following ".$user->name."'s publications'";
+
     }
 
     public static function unfollowUser(User $unfollower, User $user) {
@@ -80,9 +80,12 @@ class UserDataManager extends Model {
                             'id' => $unfollower->id,
                             'name' => $unfollower->name
                             ), $flws);
-        if (gettype($key)=='integer') {
+        if ($key) {
             array_splice($flws, $key, 1);
             $udata->followers = $flws;
+            
+            //update la propriété following du UserData de $user
+
             $udata->save();
             return "You will be no longer following that user";
         } else {

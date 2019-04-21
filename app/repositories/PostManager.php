@@ -10,6 +10,7 @@ use App\repositories\CodeSnippetManager;
 use App\repositories\CommentManager;
 use App\repositories\NotificationManager;
 use App\repositories\ProfilePicManager;
+use App\repositories\UserDataManager;
 
 use App\Version;
 use App\CodeSnippet;
@@ -309,6 +310,7 @@ class PostManager extends Model {
     * ALGO - PSEUDO CODE
     * postsFeed (auth user) :
     * -analyser les mots clés des groupes suivis par l'utilisateur
+    * -analyser les utilisateurs suivis pas l'utilisateur
     * -(si groupes)selectionner tous les posts recoupés avec ces mots clés
     * -(sinon)selectionner tous les posts
     * -les trier par ordre descendant de date
@@ -326,6 +328,8 @@ class PostManager extends Model {
             $userKeywords[] = $word;
         }
     }
+
+    //alayser la propriété following du Userdata de $user
 
     $postsMainList;
 
