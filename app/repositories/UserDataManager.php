@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\User;
 use App\UserData;
+use App\repositories\ProfilePicManager;
 
 class UserDataManager extends Model {
 
@@ -22,6 +23,8 @@ class UserDataManager extends Model {
         $udata = new UserData();
         $udata->user_id = $user->id;
         $udata->user_name = $user->name;
+        $pic = ProfilePicManager::getUserProfilePic($user->id);
+        $udata->profile_pic_url = $pic->url;
         $udata->user_links = [];
         $udata->followers = [];
         $udata->user_presentation = '';

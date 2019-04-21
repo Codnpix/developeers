@@ -48,7 +48,7 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     //USER DATA
     Route::post('/inituserdata', 'PassportController@storeInitUserData')->name('user.initdata');
     Route::get('/userdata','UserController@getUserData')->name('user.userdata');
-    Route::get('/userdata/{user}', 'UserController@getUserData')->name('user.anuserdata');
+    Route::get('/userdata/{user}', 'UserController@getAnUserData')->name('user.anuserdata');
     Route::put('/userdata', 'UserController@updateUserData')->name('user.updateData');
     Route::put('/followuser/{user}', 'UserController@followUser')->name('user.followuser');
     Route::put('/unfollowuser/{user}', 'UserController@unfollowUser')->name('user.unfollowuser');

@@ -6,6 +6,7 @@ use App\Profile_pic;
 use App\repositories\CommentManager;
 use App\repositories\PostManager;
 use App\repositories\VersionManager;
+use App\UserData;
 use Illuminate\Support\Facades\Storage;
 
 use App\Comment;
@@ -37,6 +38,11 @@ class ProfilePicManager extends Model {
         foreach ($userPosts as $c) {
             PostManager::updateAuthorProfilePicUrl($c, $url);
         }
+        //update UserData
+        $udata = UserData::where('user_id', $userId)->first();
+        $udata->profile_pic_url = $url;
+        $udata->save();
+
         return "Image stored successfully !";
     }
 
