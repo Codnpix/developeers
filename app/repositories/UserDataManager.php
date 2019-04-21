@@ -64,7 +64,7 @@ class UserDataManager extends Model {
                             'name' => $follower->name
                             ), $flws);
         if (gettype($key)=='integer') {
-            return "You are already following that user";
+            return "You are already following at ".$user->name;
         } else {
             $flws[] = array(
                         'id' => $follower->id,
@@ -82,6 +82,7 @@ class UserDataManager extends Model {
             );
             $authUserData->following = $authFollowing;
             $authUserData->save();
+            return "You are now following at ".$user->name;
         }
     }
 
@@ -99,7 +100,7 @@ class UserDataManager extends Model {
             $udata->save();
 
             //update la propriété following du UserData de $user
-            $authUserData = UserData::where('user_id', $follower->id)->first();
+            $authUserData = UserData::where('user_id', $unfollower->id)->first();
             $authFollowing = $authUserData->following;
             $fkey = array_search(array(
                                 'id' => $user->id,
@@ -111,9 +112,9 @@ class UserDataManager extends Model {
             $authUserData->following = $authFollowing;
             $authUserData->save();
 
-            return "You will be no longer following that user";
+            return "You will be no longer following at ".$user->name;
         } else {
-            return "You are not following that user";
+            return "You are not following at ".$user->name;
         }
     }
 }
