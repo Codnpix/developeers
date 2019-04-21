@@ -46,7 +46,8 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::get('user/profilepic', 'UserController@getProfilePic')->name('user.getProfilePic');
     Route::get('user/profilepic/{user}', 'UserController@getAnUserProfilePic')->name('user.getUserProfilePic');
     //USER DATA
-    Route::get('/userdata',' UserController@getUserData')->name('user.userdata');
+    Route::post('/inituserdata', 'PassportController@storeInitUserData')->name('user.initdata');
+    Route::get('/userdata','UserController@getUserData')->name('user.userdata');
     Route::get('/userdata/{user}', 'UserController@getUserData')->name('user.anuserdata');
     Route::put('/userdata', 'UserController@updateUserData')->name('user.updateData');
     Route::put('/followuser/{user}', 'UserController@followUser')->name('user.followuser');

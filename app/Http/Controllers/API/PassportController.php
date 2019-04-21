@@ -36,8 +36,9 @@ class PassportController extends Controller
         return response()->json(['token' => $token], 200);
     }
 
-    private static function storeInitUserData(User $user) {
+    public static function storeInitUserData(User $user) {
         //called by Passport::registerUser
+        //or by Route::post('/inituserdata', 'PassportController@storeInitUserData')->name('user.initdata');
         $response = UserDataManager::storeInitUserData($user);
         return $response;
     }

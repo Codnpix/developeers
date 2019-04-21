@@ -33,6 +33,13 @@ class UserDataManager extends Model {
     public static function updateUserData(Request $req, User $user) {
         //Route::put()
         $udata = UserData::where('user_id', $user->id)->first();
+
+        if (!$udata) {//temporaire, pour pas devoir recréer tous les user d'avant qui ont pas leur userData
+            $udata = new UserData();
+            $udata->user_id = $user->id;
+            $udata->user_name = $user->name;
+        }
+
         $udata->user_links = $req->user_links;
         $udata->user_presentation = $req->user_presentation;
         $udata->user_interests = $req->user_interests;
