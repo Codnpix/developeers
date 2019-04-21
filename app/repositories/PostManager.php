@@ -370,8 +370,12 @@ class PostManager extends Model {
     $postsMainList = (count($postsMainList) > self::MAIN_POSTS_FEED_LIMIT) ? array_slice($postsMainList, 0, self::MAIN_POSTS_FEED_LIMIT) : $postsMainList;
     $thisMonthPosts = (count($thisMonthPosts) > self::RECENT_POSTS_FEED_LIMIT) ? array_slice($thisMonthPosts, 0, self::RECENT_POSTS_FEED_LIMIT) : $thisMonthPosts;
 
-    $result = array_merge($thisMonthPosts, $postsMainList);
-    return $result;
+    $total = array_merge($thisMonthPosts, $postsMainList);
+    $postsBuildResult=[];
+    foreach($total as $p) {
+        $postsBuildResult[] = self::buildPostForList($p);
+    }
+    return $postsBuildResult;
   }
 
   public static function getGuestFeed() {
@@ -415,9 +419,13 @@ class PostManager extends Model {
       $postsMainList = (count($postsMainList) > self::MAIN_POSTS_FEED_LIMIT) ? array_slice($postsMainList, 0, self::MAIN_POSTS_FEED_LIMIT) : $postsMainList;
       $thisMonthPosts = (count($thisMonthPosts) > self::RECENT_POSTS_FEED_LIMIT) ? array_slice($thisMonthPosts, 0, self::RECENT_POSTS_FEED_LIMIT) : $thisMonthPosts;
 
-      $result = array_merge($thisMonthPosts, $postsMainList);
+      $total = array_merge($thisMonthPosts, $postsMainList);
 
-      return $result;
+      $postsBuildResult=[];
+      foreach($total as $p) {
+          $postsBuildResult[] = self::buildPostForList($p);
+      }
+      return $postsBuildResult;
   }
 
   /**
