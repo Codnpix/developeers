@@ -306,19 +306,7 @@ class PostManager extends Model {
 
   public static function getUserFeed(User $user) {
 
-    /*-------------------------------------
-    * ALGO - PSEUDO CODE
-    * postsFeed (auth user) :
-    * -analyser les mots clés des groupes suivis par l'utilisateur
-    * -analyser les utilisateurs suivis pas l'utilisateur
-    * -(si groupes)selectionner tous les posts recoupés avec ces mots clés
-    * -(sinon)selectionner tous les posts
-    * -les trier par ordre descendant de date
-    * -extraire dans un tableau à part les posts publiés il y a moins de 3 jours
-    * -tronquer le premier résultat à 30 posts
-    * -tronquer le deuxième résultat à 5 posts
-    * -concaténer les deux tableaux avec celui des 5 plus récents en premier
-    *-------------------------------------*/
+    $postsMainList;
 
     $userGroups = Group::whereIn('users_id', [$user->id])->get();
     $userKeywords = [];
@@ -329,10 +317,7 @@ class PostManager extends Model {
         }
     }
 
-    //alayser la propriété following du Userdata de $user
-
-    $postsMainList;
-
+    //add posts crossed with keywords in followed groups
     if ($userGroups->count() > 0) {
         $postsCrossWords = [];
         foreach($userKeywords as $uWord) {
@@ -342,7 +327,22 @@ class PostManager extends Model {
             }
         }
         $postsMainList = $postsCrossWords;
-    } else {
+    }
+
+    //add posts whose author is followed by user
+    $followedUsers = UserDataManager::getUsersFollowedBy($user);
+    if (count($followedUsers) > 0) {
+        foreach ($followedUsers as $fu) {
+            $u = User::find($fu['id']);
+            $uPosts = Post::where('author_id', $u->id)->get();
+            foreach ($uPosts as $p) {
+                $postsMainList[] = $p;
+            }
+        }
+    }
+
+    //if no groups and no users are followed by user, add all posts
+    if ($userGroups->count() == 0 && $followedUsers->count() == 0) {
         $allPosts = Post::all();
         foreach ($allPosts as $p) {
             $postsMainList[] = $p;
@@ -379,17 +379,6 @@ class PostManager extends Model {
   }
 
   public static function getGuestFeed() {
-
-      /*-------------------------------------
-      * ALGO - PSEUDO CODE
-      * GuestFeed (guest user):
-      * -selectionner tous les posts
-      * -les trier par date descendante
-      * -extraire les posts publiés il y a moins de 3 jours dans un tableau à part
-      * -tronquer le premier tableau à {30?} posts et les classer par nb de votes positifs
-      * -tronquer le deuxième tableau à {5?} posts
-      * -concaténer les deux tableaux  avec celui des 5 plus récents en premier
-      *-------------------------------------*/
 
       $allPosts = Post::all();
       //pass it to a real array
