@@ -56,7 +56,7 @@ class UserDataManager extends Model {
                             'id' => $follower->id,
                             'name' => $follower->name
                             ), $flws);
-        if ($key) {
+        if (gettype($key)=='integer') {
             return "You are already following that user";
         } else {
             $flws[] = array(
@@ -80,10 +80,10 @@ class UserDataManager extends Model {
                             'id' => $unfollower->id,
                             'name' => $unfollower->name
                             ), $flws);
-        if ($key) {
+        if (gettype($key)=='integer') {
             array_splice($flws, $key, 1);
             $udata->followers = $flws;
-            
+
             //update la propriété following du UserData de $user
 
             $udata->save();
