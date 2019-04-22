@@ -16,7 +16,7 @@ use App\User;
 
 class CommentManager extends Model {
 
-    private const COMMENT_LIST_LIMIT = 3;//TMP
+    private const COMMENT_LIST_LIMIT = 10;//?
 
   public static function addComment(Request $request, Version $version, User $user) {
     $author = $user;
@@ -103,6 +103,16 @@ class CommentManager extends Model {
     usort($sortedComments, array('App\Repositories\CommentManager', 'sortByDate'));
     $result = array_slice($sortedComments, 0, self::COMMENT_LIST_LIMIT);
     return $result;
+  }
+
+  public static function getAllComments(Version $version) {
+      $comments = Comment::where('version_id', $version->id)->get();
+      $sortedComments = [];
+      foreach($comments as $c) {
+          $sortedComments[] = $c;
+      }
+      usort($sortedComments, array('App\Repositories\CommentManager', 'sortByDate'));
+      return $sortedComments;
   }
 
   public static function getCommentsAfter(Version $version, Comment $lastCommentOfList) {

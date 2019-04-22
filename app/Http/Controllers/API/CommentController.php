@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Comment;
 use App\Version;
+use App\Post;
 use App\repositories\CommentManager;
 
 class CommentController extends Controller {
@@ -23,12 +24,12 @@ class CommentController extends Controller {
     return $msg;
   }
 
-  public function getCommentsAfter(Version $version, Comment $comment) {
+  public function getCommentsAfter(Post $post, Version $version, Comment $comment) {
       $comments = CommentManager::getCommentsAfter($version, $comment);
       return $comments;
   }
 
-  public function getCommentsBefore(Version $version, Comment $comment) {
+  public function getCommentsBefore(Post $post, Version $version, Comment $comment) {
       $comments = CommentManager::getCommentsBefore($version, $comment);
       return $comments;
   }
