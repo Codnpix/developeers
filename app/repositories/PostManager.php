@@ -333,10 +333,12 @@ class PostManager extends Model {
     $followedUsers = UserDataManager::getUsersFollowedBy($user);
     if (count($followedUsers) > 1) {
         foreach ($followedUsers as $fu) {
-            $u = User::find($fu['id']);
-            $uPosts = Post::where('author_id', $u->id)->get();
-            foreach ($uPosts as $p) {
-                $postsMainList[] = $p;
+            if ($fu['id'] != 0) {
+                $u = User::find($fu['id']);
+                $uPosts = Post::where('author_id', $u->id)->get();
+                foreach ($uPosts as $p) {
+                    $postsMainList[] = $p;
+                }
             }
         }
     }
