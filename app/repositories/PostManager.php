@@ -167,62 +167,26 @@ class PostManager extends Model {
       ));
     }
 
+    $firstCommentId;
+    $lastCommentId;
+    if (count($comments)>0) {
+        $firstCommentId = $comments[0]->id;
+        $lastCommentId = end($comments)->id;
+    } else {
+        $firstCommentId = null;
+        $lastCommentId = null;
+    }
+
     $postBuild = $post;
     $postBuild->versions = $versionsList;
     $postBuild->active_version = $version;
     $postBuild->active_version->code_snippets = $snippets;
     $postBuild->active_version->comments = $comments;
+    $postBuild->active_version->first_comment_id = $firstCommentId;
+    $postBuild->active_version->last_comment_id = $lastCommentId;
 
     return $postBuild;
   }
-
-  public static function getPostVersionCommentPage(Post $post, Version $version, Comment $comment) {
-      $snippets = CodeSnippetManager::getVersionSnippets($version);
-
-      $versions = VersionManager::getPostVersions($post);
-      $versionsList = [];
-
-      $comments = CommentManager::getCommentsAfter($version, $comment);
-
-      foreach ($versions as $v) {
-        array_push($versionsList, array(
-          'number' => $v->number,
-          '_id' => $v->id
-        ));
-      }
-
-      $postBuild = $post;
-      $postBuild->versions = $versionsList;
-      $postBuild->active_version = $version;
-      $postBuild->active_version->code_snippets = $snippets;
-      $postBuild->active_version->comments = $comments;
-
-      return $postBuild;
-  }
-
-  // public static function getPostVersionCommentPrevPage(Post $post, Version $version, Comment $comment) {
-  //     $snippets = CodeSnippetManager::getVersionSnippets($version);
-  //
-  //     $versions = VersionManager::getPostVersions($post);
-  //     $versionsList = [];
-  //
-  //     $comments = CommentManager::getCommentsBefore($version, $comment);
-  //
-  //     foreach ($versions as $v) {
-  //       array_push($versionsList, array(
-  //         'number' => $v->number,
-  //         '_id' => $v->id
-  //       ));
-  //     }
-  //
-  //     $postBuild = $post;
-  //     $postBuild->versions = $versionsList;
-  //     $postBuild->active_version = $version;
-  //     $postBuild->active_version->code_snippets = $snippets;
-  //     $postBuild->active_version->comments = $comments;
-  //
-  //     return $postBuild;
-  // }
 
   public static function getPost(Post $post) {
 
@@ -241,11 +205,24 @@ class PostManager extends Model {
       ));
     }
 
+    $totalComments = CommentManager::getAllComments($lastVersion);
+    $firstCommentId;
+    $lastCommentId;
+    if (count($totalComments)>0) {
+        $firstCommentId = $totalComments[0]->id;
+        $lastCommentId = end($totalComments)->id;
+    } else {
+        $firstCommentId = null;
+        $lastCommentId = null;
+    }
+
     $postBuild = $post;
     $postBuild->versions = $versionsList;
     $postBuild->active_version = $lastVersion;
     $postBuild->active_version->code_snippets = $snippets;
     $postBuild->active_version->comments = $comments;
+    $postBuild->active_version->first_comment_id = $firstCommentId;
+    $postBuild->active_version->last_comment_id = $lastCommentId;
 
     return $postBuild;
   }

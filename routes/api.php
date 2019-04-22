@@ -82,10 +82,6 @@ Route::middleware('auth:api', 'cors')->namespace('API')->group(function () {
     Route::get('/posts/{post}', 'PostController@show')->name('posts.post');
     //get a specific version of a specific post :
     Route::get('/posts/{post}/{version}', 'PostController@showVersion')->name('posts.version');
-    //get a version in a post with comments page after a comment
-    //Route::get('/commentsafter/{post}/{version}/{comment}', 'PostController@showPostVersionCommentPage')->name('posts.commentsafter');
-    //get a version in a post with comments page before a comment
-    // Route::get('/commentsbefore/{post}/{version}/{comment}', 'PostController@showPostVersionCommentPrevPage')->name('posts.commentsafter');
     //post research routes :
     Route::get('/searchposts/{words}', 'PostController@searchPosts')->name('posts.search');
     //delete post specific version

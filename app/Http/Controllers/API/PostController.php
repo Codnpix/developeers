@@ -96,16 +96,6 @@ class PostController extends Controller {
       return $postBuild;
     }
 
-    public function showPostVersionCommentPage(Post $post, Version $version, Comment $comment) {
-        $postsBuild = PostManager::getPostVersionCommentPage($post, $version, $comment);
-        return $postsBuild;
-    }
-
-    // public function showPostVersionCommentPrevPage(Post $post, Version $version, Comment $comment) {
-    //     $postsBuild = PostManager::getPostVersionCommentPrevPage($post, $version, $comment);
-    //     return $postsBuild;
-    // }
-
     public function showUserFeed() {
       $user = auth()->user();
       $posts = PostManager::getUserFeed($user);
