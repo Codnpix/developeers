@@ -94,7 +94,12 @@ class CommentManager extends Model {
 
   public static function getComments(Version $version) {
     $comments = Comment::where('version_id', $version->id)->get();
-    return $comments;
+    $sortedComments = [];
+    foreach($comments as $c) {
+        $sortedComments[] = $c;
+    }
+    usort($sortedComments, array('App\Repositories\CommentManager', 'sortByDate'));
+    return $sortedComments;
   }
 
   public static function updateComment(Request $request, Comment $comment) {
@@ -107,5 +112,12 @@ class CommentManager extends Model {
     NotificationManager::deleteElementRelatedNotifications($comment->id);
     $comment->delete();
     return "Comment deleted successfully";
+  }
+
+  private static function sortByDate($a, $b) {
+      if ($a['created_at'] == $b['created_at']) {
+          return 0;
+      }
+      return ($a['created_at'] < $b['created_at']) ? 1 : -1;
   }
 }

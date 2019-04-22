@@ -159,6 +159,7 @@ class PostManager extends Model {
     $versionsList = [];
 
     $comments = CommentManager::getComments($version);
+    // here
 
     foreach ($versions as $v) {
       array_push($versionsList, array(
@@ -186,7 +187,6 @@ class PostManager extends Model {
     $comments = CommentManager::getComments($lastVersion);
 
     $versionsList = [];
-
     foreach ($versions as $v) {
       array_push($versionsList, array(
         'number' => $v->number,
