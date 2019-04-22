@@ -110,8 +110,8 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::post('/comments/{version}', 'CommentController@addComment')->name('comments.add');
     //vote for a comment
     Route::put('/votecomment/{comment}', 'CommentController@voteComment')->name('comments.vote');
-    Route::get('/commentsafter/{post}/{version}{comment}', 'CommentController@getCommentsAfter')->name('comments.after');
-    Route::get('/commentsbefore/{post}/{version}{comment}', 'CommentController@getCommentsBefore')->name('comments.after');
+    Route::get('/commentsafter/{post}/{version}/{comment}', 'CommentController@getCommentsAfter')->name('comments.after');
+    Route::get('/commentsbefore/{post}/{version}/{comment}', 'CommentController@getCommentsBefore')->name('comments.after');
 
     //GROUPS
     //get all groups
