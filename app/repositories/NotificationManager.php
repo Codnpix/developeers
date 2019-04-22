@@ -92,8 +92,8 @@ class NotificationManager extends Model {
     public static function notifyFollowedUser(User $followed, User $follower, $type, $source, $originElementId) {
         $notified = $followed;
         $notifying = $follower;
-        $post = Post::where('author_id', $notifying->id)->first();//doesn't matter
-        $version = Version::where('post_id', $post->id)->first();//doesn't matter
+        $post = Post::first();//doesn't matter
+        $version = Version::first();//doesn't matter
         self::addNotification($notified, $notifying, $post, $version, $type, $source, $originElementId);
     }
 
