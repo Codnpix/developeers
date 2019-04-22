@@ -68,6 +68,11 @@ class UserController extends Controller {
     public function getAnUserData(User $user) {
         //Route::get('/userdata/{user}', 'UserController@getUserData')->name('user.anuserdata');
         $response = UserDataManager::getUserData($user);
+
+        //clear notifications related
+        $authUser = auth()->user();
+        NotificationManager::clearUserRelatedNotifications($authUser, $user);
+
         return $response;
     }
 

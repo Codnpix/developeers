@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\User;
 use App\UserData;
+use App\repositories\NotificationManager;
 
 class UserDataManager extends Model {
 
@@ -94,6 +95,13 @@ class UserDataManager extends Model {
             );
             $authUserData->following = $authFollowing;
             $authUserData->save();
+
+            //send notification to the followed $user
+            $type = "follow";
+            $source = "user";
+            $originElementId = $follower->id;
+            NotificationManager::notifyFollowedUser($user, $follower, $type, $source, $originElementId);
+
             return "You are now following at ".$user->name;
         }
     }

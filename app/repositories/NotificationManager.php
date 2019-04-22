@@ -25,6 +25,9 @@ class NotificationManager extends Model {
       }
 
       $oldNotifs = (count($oldNotifs) > 50) ? array_slice($oldNotifs, 0, 50) : $oldNotifs;
+
+      usort($oldNotifs, array('App\Repositories\NotificationManager', 'sortByDate'));
+      usort($unreadNotifs, array('App\Repositories\NotificationManager', 'sortByDate'));
       $result = array_merge(array_reverse($unreadNotifs), array_reverse($oldNotifs));
       return $result;
     }
@@ -86,6 +89,14 @@ class NotificationManager extends Model {
       self::addNotification($notified,$notifying,$post,$version,$type,$source, $originElementId);
     }
 
+    public static function notifyFollowedUser(User $followed, User $follower, $type, $source, $originElementId) {
+        $notified = $followed;
+        $notifying = $follower;
+        $post = Post::where('author_id', $notifying->id)->first();//doesn't matter
+        $version = Version::where('post_id', $post->id)->first();//doesn't matter
+        self::addNotification($notified, $notifying, $post, $version, $type, $source, $originElementId);
+    }
+
     private static function addNotification(User $notified,
                                           User $notifying,
                                           Post $post,
@@ -94,8 +105,8 @@ class NotificationManager extends Model {
                                           $source,
                                           $originElementId) {
 
-      //$type : expected String "comment" or "vote " or "version"
-      //$source: expected String "comment" or "post" or "version"
+      //$type : expected String "comment" or "vote " or "version" (or "follow")
+      //$source: expected String "comment" or "post" or "version" ( or "user")
 
       $message = "";
 
@@ -121,14 +132,22 @@ class NotificationManager extends Model {
      } else if ($type == 'version') {
 
        $message = $notifying->name .' a créé une nouvelle version pour '. $post->title;
-     }
+
+   } else if ($type == 'follow') {
+
+       $message = $notifying->name.' vous suit.';
+   }
 
      if (!$message == ""
      && $notified->id != $notifying->id) {
        $notif = new Notification();
        $notif->notified_user_id = $notified->id;
        $notif->message = $message;
-       $notif->request_route_link = '/posts/'.$post->id.'/'.$version->id;
+       if ($type = 'follow') {
+           $notif->request_route_link = '/public-page/'.str_replace(' ','-',$notifying->name).'/'.$notifying->id;
+       } else {
+           $notif->request_route_link = '/posts/'.$post->id.'/'.$version->id;
+       }
        $notif->version = array(
          "id"=>$version->id,
          "number"=>$version->number
@@ -141,14 +160,24 @@ class NotificationManager extends Model {
    }
 
    public static function clearNotifications(User $user, Post $post, Version $version) {
-     $notifications = Notification::where('notified_user_id', $user->id)
+        $notifications = Notification::where('notified_user_id', $user->id)
                                   ->where('post_id', $post->id)
                                   ->where('version.id', $version->id)
                                   ->get();
-     foreach($notifications as $n) {
-       $n->unread = false;
-       $n->save();
-     }
+        foreach($notifications as $n) {
+            $n->unread = false;
+            $n->save();
+        }
+   }
+
+   public static function clearUserRelatedNotifications(User $user, User $follower) {
+        $notifications = Notification::where('notified_user_id', $user->id)
+                                    ->where('origin_element_id', $follower->id)
+                                    ->get();
+        foreach($notifications as $n) {
+            $n->unread = false;
+            $n->save();
+        }
    }
 
    public static function deleteElementRelatedNotifications($elementId) {
@@ -173,5 +202,12 @@ class NotificationManager extends Model {
        $notif->unread = false;
        $notif->save();
        return "Notification has been marked as read";
+   }
+
+   private static function sortByDate($a, $b) {
+       if ($a['created_at'] == $b['created_at']) {
+           return 0;
+       }
+       return ($a['created_at'] < $b['created_at']) ? 1 : -1;
    }
 }
