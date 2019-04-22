@@ -22,4 +22,14 @@ class CommentController extends Controller {
     $msg = CommentManager::voteComment($request, $comment, $user);
     return $msg;
   }
+
+  public function getCommentsAfter(Version $version, Comment $comment) {
+      $comments = CommentManager::getCommentsAfter($version, $comment);
+      return $comments;
+  }
+
+  public function getCommentsBefore(Version $version, Comment $comment) {
+      $comments = CommentManager::getCommentsBefore($version, $comment);
+      return $comments;
+  }
 }

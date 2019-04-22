@@ -80,6 +80,10 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::get('/posts/{post}', 'PostController@show')->name('posts.post');
     //get a specific version of a specific post :
     Route::get('/posts/{post}/{version}', 'PostController@showVersion')->name('posts.version');
+    //get a version in a post with comments page after a comment
+    //Route::get('/commentsafter/{post}/{version}/{comment}', 'PostController@showPostVersionCommentPage')->name('posts.commentsafter');
+    //get a version in a post with comments page before a comment
+    // Route::get('/commentsbefore/{post}/{version}/{comment}', 'PostController@showPostVersionCommentPrevPage')->name('posts.commentsafter');
     //post research routes :
     Route::get('/searchposts/{words}', 'PostController@searchPosts')->name('posts.search');
     //delete post specific version
@@ -106,6 +110,8 @@ Route::middleware('auth:api')->namespace('API')->group(function () {
     Route::post('/comments/{version}', 'CommentController@addComment')->name('comments.add');
     //vote for a comment
     Route::put('/votecomment/{comment}', 'CommentController@voteComment')->name('comments.vote');
+    Route::get('/commentsafter/{post}/{version}{comment}', 'CommentController@getCommentsAfter')->name('comments.after');
+    Route::get('/commentsbefore/{post}/{version}{comment}', 'CommentController@getCommentsBefore')->name('comments.after');
 
     //GROUPS
     //get all groups

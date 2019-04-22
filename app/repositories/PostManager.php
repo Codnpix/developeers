@@ -159,7 +159,6 @@ class PostManager extends Model {
     $versionsList = [];
 
     $comments = CommentManager::getComments($version);
-    // here
 
     foreach ($versions as $v) {
       array_push($versionsList, array(
@@ -176,6 +175,54 @@ class PostManager extends Model {
 
     return $postBuild;
   }
+
+  public static function getPostVersionCommentPage(Post $post, Version $version, Comment $comment) {
+      $snippets = CodeSnippetManager::getVersionSnippets($version);
+
+      $versions = VersionManager::getPostVersions($post);
+      $versionsList = [];
+
+      $comments = CommentManager::getCommentsAfter($version, $comment);
+
+      foreach ($versions as $v) {
+        array_push($versionsList, array(
+          'number' => $v->number,
+          '_id' => $v->id
+        ));
+      }
+
+      $postBuild = $post;
+      $postBuild->versions = $versionsList;
+      $postBuild->active_version = $version;
+      $postBuild->active_version->code_snippets = $snippets;
+      $postBuild->active_version->comments = $comments;
+
+      return $postBuild;
+  }
+
+  // public static function getPostVersionCommentPrevPage(Post $post, Version $version, Comment $comment) {
+  //     $snippets = CodeSnippetManager::getVersionSnippets($version);
+  //
+  //     $versions = VersionManager::getPostVersions($post);
+  //     $versionsList = [];
+  //
+  //     $comments = CommentManager::getCommentsBefore($version, $comment);
+  //
+  //     foreach ($versions as $v) {
+  //       array_push($versionsList, array(
+  //         'number' => $v->number,
+  //         '_id' => $v->id
+  //       ));
+  //     }
+  //
+  //     $postBuild = $post;
+  //     $postBuild->versions = $versionsList;
+  //     $postBuild->active_version = $version;
+  //     $postBuild->active_version->code_snippets = $snippets;
+  //     $postBuild->active_version->comments = $comments;
+  //
+  //     return $postBuild;
+  // }
 
   public static function getPost(Post $post) {
 

@@ -16,6 +16,8 @@ use App\User;
 
 class CommentManager extends Model {
 
+    private const COMMENT_LIST_LIMIT = 3;//TMP
+
   public static function addComment(Request $request, Version $version, User $user) {
     $author = $user;
     $comment = new Comment();
@@ -99,7 +101,34 @@ class CommentManager extends Model {
         $sortedComments[] = $c;
     }
     usort($sortedComments, array('App\Repositories\CommentManager', 'sortByDate'));
-    return $sortedComments;
+    $result = array_slice($sortedComments, 0, self::COMMENT_LIST_LIMIT);
+    return $result;
+  }
+
+  public static function getCommentsAfter(Version $version, Comment $lastCommentOfList) {
+      $fullCommentsList = Comment::where('version_id', $version->id)->get();
+      $fullCommentsSortedList = [];
+      foreach($fullCommentsList as $c) {
+          $fullCommentsSortedList[] = $c;
+      }
+      usort($fullCommentsSortedList, array('App\Repositories\CommentManager', 'sortByDate'));
+      //get the key of the pivot comment
+      $key = array_search($lastCommentOfList, $fullCommentsSortedList);
+      $result = array_slice($fullCommentsSortedList, $key, self::COMMENT_LIST_LIMIT);
+      return $result;
+  }
+
+  public static function getCommentsBefore(Version $version, Comment $firstCommentOfList) {
+      $fullCommentsList = Comment::where('version_id', $version->id)->get();
+      $fullCommentsSortedList = [];
+      foreach($fullCommentsList as $c) {
+          $fullCommentsSortedList[] = $c;
+      }
+      usort($fullCommentsSortedList, array('App\Repositories\CommentManager', 'sortByDate'));
+
+      $key = array_search($firstCommentOfList, $fullCommentsSortedList);
+      $result = array_slice($fullCommentsSortedList, $key - self::COMMENT_LIST_LIMIT, self::COMMENT_LIST_LIMIT);
+      return $result;
   }
 
   public static function updateComment(Request $request, Comment $comment) {
