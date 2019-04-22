@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'cors' => \Spatie\Cors\Cors::class,
+        //'customCors' => \App\Http\Middleware\CorsHandling::class;
     ];
 
     /**
