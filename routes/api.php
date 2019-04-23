@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 //FREE ACCESS
 Route::namespace('API')->group(function(){
-    Route::options('{any}');//useless?
+    //Route::options('{any}');//useless?
     Route::post('login', 'PassportController@login')->name('login');
     Route::post('register', 'PassportController@register')->name('register');
 
@@ -40,7 +40,7 @@ Route::namespace('API')->group(function(){
 
 //AUTHENTICATED ONLY
 Route::middleware('auth:api')->namespace('API')->group(function () {
-    Route::options('{any}');
+    //Route::options('{any}');
     //USER
     Route::get('user', 'PassportController@details')->name('user.details');
     Route::put('user/update', 'PassportController@updateUser')->name('user.update');
