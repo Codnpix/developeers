@@ -37,8 +37,11 @@ return [
             'X-Auth-Token',
             'Origin',
             'Authorization',
-            'Accept'
+            'Accept',
+            'Allow-Headers'
         ],
+
+        // "Access-Control-Allow-Headers: ,, Access-Control-Allow-Headers, access-control-allow-methods, Access-Control-Allow-Origin"
 
         'expose_headers' => [
             'Cache-Control',
