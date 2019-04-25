@@ -137,7 +137,8 @@ class CommentManager extends Model {
       usort($fullCommentsSortedList, array('App\Repositories\CommentManager', 'sortByDate'));
 
       $key = array_search($firstCommentOfList, $fullCommentsSortedList);
-      $result = array_slice($fullCommentsSortedList, $key - self::COMMENT_LIST_LIMIT, self::COMMENT_LIST_LIMIT);
+      $key = ($key - self::COMMENT_LIST_LIMIT >= 0) ? $key - self::COMMENT_LIST_LIMIT : 0;
+      $result = array_slice($fullCommentsSortedList, $key, self::COMMENT_LIST_LIMIT);
       return $result;
   }
 
