@@ -38,7 +38,7 @@ return [
             'Origin',
             'Authorization',
             'Accept',
-            'Allow-Headers'
+            'Access-Control-Allow-Headers'
         ],
 
         // "Access-Control-Allow-Headers: ,, Access-Control-Allow-Headers, access-control-allow-methods, Access-Control-Allow-Origin"
