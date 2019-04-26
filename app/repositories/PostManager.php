@@ -84,7 +84,7 @@ class PostManager extends Model {
     $post->author_name = $user->name;
 
     $picUrl = ProfilePicManager::getUserProfilePic($user->id);
-    if ($picUrl == "false") $picUrl = 'http://localhost/developeers/public/blank_profile_pic.png';
+    if ($picUrl == "false") $picUrl = env('APP_PUBLIC_LOCAL_URL').'blank_profile_pic.png';
     $post->author_profile_pic_url = $picUrl;
 
     $post->followers = [$user->id];//author automatically follows his own post
@@ -167,11 +167,12 @@ class PostManager extends Model {
       ));
     }
 
+    $totalComments = CommentManager::getAllComments($version);
     $firstCommentId;
     $lastCommentId;
-    if (count($comments)>0) {
-        $firstCommentId = $comments[0]->id;
-        $lastCommentId = end($comments)->id;
+    if (count($totalComments)>0) {
+        $firstCommentId = $totalComments[0]->id;
+        $lastCommentId = end($totalComments)->id;
     } else {
         $firstCommentId = null;
         $lastCommentId = null;
