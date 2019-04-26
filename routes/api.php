@@ -36,6 +36,9 @@ Route::namespace('API')->middleware('cors')->group(function(){
     Route::get('/guest/searchposts/{words}', 'GuestController@searchPosts')->name('guest.searchPosts');
     //search groups :
     Route::get('/guest/searchgroups/{words}', 'GuestController@searchGroups')->name('guest.searchGroups');
+    //comments pages :
+    Route::get('/guest/commentsafter/{post}/{version}/{comment}', 'CommentController@getCommentsAfter')->name('comments.after');
+    Route::get('/guest/commentsbefore/{post}/{version}/{comment}', 'CommentController@getCommentsBefore')->name('comments.after');
 });
 
 //AUTHENTICATED ONLY
