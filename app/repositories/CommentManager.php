@@ -24,8 +24,8 @@ class CommentManager extends Model {
     $comment->author_id = $author->id;
     $comment->author_name = $author->name;
     $picUrl = ProfilePicManager::getUserProfilePic($user->id);
-    if ($picUrl == "false") $picUrl = 'http://localhost/developeers/public/blank_profile_pic.png';
-    $comment->author_profile_pic_url = $picUrl;
+    if ($picUrl == "false") $picUrl = env('APP_PUBLIC_LOCAL_URL').'blank_profile_pic.png';
+    $comment->author_profile_pic_url = env('APP_STORAGE_LOCAL_URL').$picUrl;
     $comment->content = $request->content;
     $comment->version_id = $version->id;
     $comment->votes = [];

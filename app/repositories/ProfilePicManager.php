@@ -19,7 +19,7 @@ class ProfilePicManager extends Model {
 
     public static function storePath($path, $userId) {
         self::deletePreviousProfilePics($userId);
-        $url = 'http://51.75.126.70/developeers/storage/app/public/' .$path;
+        $url = env('HOST_URL').'/developeers/storage/app/public/'.$path;
         $pic = new Profile_pic();
         $pic->image_path = $url;
         $pic->local_path = $path;
@@ -51,7 +51,7 @@ class ProfilePicManager extends Model {
         if(!$pic) {
             return "false";
         }
-        $path = $pic->image_path;
+        $path = $pic->local_path;
         return $path;
     }
 
