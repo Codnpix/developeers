@@ -16,7 +16,7 @@ use App\User;
 
 class CommentManager extends Model {
 
-    private const COMMENT_LIST_LIMIT = 10;//?
+    private const COMMENT_LIST_LIMIT = 10;
 
   public static function addComment(Request $request, Version $version, User $user) {
     $author = $user;

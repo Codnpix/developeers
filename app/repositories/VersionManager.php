@@ -24,7 +24,7 @@ class VersionManager extends Model {
     $version->author_name = $versionAuthor->name;
 
     $picUrl = ProfilePicManager::getUserProfilePic($user->id);
-    if ($picUrl == "false") $picUrl = 'http://localhost/developeers/public/blank_profile_pic.png';
+    if ($picUrl == "false") $picUrl = env('APP_PUBLIC_LOCAL_URL').'blank_profile_pic.png';
     $version->author_profile_pic_url = $picUrl;
 
     $version->post_id = $post->id;
@@ -110,7 +110,7 @@ class VersionManager extends Model {
     $version->author_name = $authorName;
 
     $picUrl = ProfilePicManager::getUserProfilePic($post->author_id);
-    if ($picUrl == "false") $picUrl = 'http://localhost/developeers/public/blank_profile_pic.png';
+    if ($picUrl == "false") $picUrl = env('APP_PUBLIC_LOCAL_URL').'blank_profile_pic.png';
     $version->author_profile_pic_url = $picUrl;
 
     $version->post_id = $post->id;
